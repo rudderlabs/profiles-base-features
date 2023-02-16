@@ -1,0 +1,272 @@
+#This is a sample file, for detailed reference see: https://rudderlabs.github.io/pywht/
+models:
+  - name: rudder_user_id_stitcher
+    model_type: id_stitcher
+    model_spec:
+      validity_time: 24h # 1 day
+      entity_key: user
+      main_id_type: main_id
+      edge_sources:
+        - inputs/rsIdentifies
+        - inputs/rsTracks
+        - inputs/rsPages
+  - name: tracksUnionPages
+    model_type: sql_template
+    model_spec:
+      validity_time: 24h # 1 day
+      materialization:
+        output_type: ephemeral
+        run_type: discrete
+      single_sql: |
+        {% with tracks = this.DeRef("inputs/rsTracks") pages = this.DeRef("inputs/rsPages") %}
+          select * from {{tracks.GetSelectTarget()}}
+            union all select * from {{pages.GetSelectTarget()}}
+        {% endwith %}
+      ids:
+        - select: "user_id"
+          type: user_id
+          entity: user
+        - select: "anonymous_id"
+          type: anonymous_id
+          entity: user
+      
+# Remove the section below, if you don't want to generate a feature table
+  - name: rudder_user_base_features
+    model_type: feature_table_model
+    model_spec:
+      validity_time: 24h # 1 day
+      entity_key: user
+      vars:
+        # - entityvar:
+        #     name: max_timestamp_tracks
+        #     select: max(timestamp)
+        #     from: inputs/rsTracks
+
+        # - entityvar:
+        #     name: max_timestamp_pages
+        #     select: max(timestamp)
+        #     from: inputs/rsPages
+
+
+        - entityvar:
+            name: max_timestamp_bw_tracks_pages
+            select: max(timestamp)
+            from: models/tracksUnionPages
+        #days since last seen
+        - entityvar:
+            name: days_since_last_seen
+            select: datediff(day, date(max_timestamp_bw_tracks_pages),date('{{timestamp.Format("2006-01-02 15:04:05")}}'))
+#       #Churn features
+        - entityvar:
+            name: is_churned_7_days
+            select: case when days_since_last_seen > 7 then 1 else 0 end
+       
+     
+        - entityvar:
+            name: days_since_account_creation
+            select: datediff(days,date(min(timestamp)),date('{{timestamp.Format("2006-01-02 15:04:05")}}'))
+
+            from: inputs/rsIdentifies
+
+        - entityvar:
+            name: has_mobile_app
+            select: max(case when lower(context_device_type) in ('android', 'ios') then 1 else 0 end)
+            from: inputs/rsIdentifies
+
+        - entityvar:
+            name: state
+            from: inputs/rsIdentifies
+            select: first_value(state)
+            window:
+              order_by: 
+              - timestamp desc
+            where: state is not null and state!=''
+
+        - entityvar:
+            name: country
+            from: inputs/rsIdentifies
+            select: first_value(address_country)
+            window:
+              order_by: 
+              - timestamp desc
+            where: address_country is not null and address_country!=''
+
+
+        - entityvar:
+            name: first_name
+            from: inputs/rsIdentifies
+            select: first_value(first_name)
+            window:
+              order_by: 
+              - timestamp desc
+            where: first_name is not null and first_name!=''
+        - entityvar:
+            name: last_name
+            from: inputs/rsIdentifies
+            select: first_value(last_name)
+            window:
+              order_by: 
+              - timestamp desc
+            where: last_name is not null and last_name!=''
+        - entityvar:
+            name: currency
+            from: inputs/rsIdentifies
+            select: first_value(currency)
+            window:
+              order_by: 
+              - timestamp desc
+            where: currency is not null and currency!=''
+
+        - entityvar:
+            name: device_name
+            from: inputs/rsIdentifies
+            select: first_value(context_device_name)
+            window:
+              order_by: 
+              - timestamp desc
+            where: context_device_name is not null and context_device_name!=''
+        - entityvar:
+            name: device_type
+            from: inputs/rsIdentifies
+            select: first_value(context_device_type)
+            window:
+              order_by: 
+              - timestamp desc
+            where: context_device_type is not null and context_device_type!=''
+        
+        - entityvar:
+            name: campaign_sources
+            select: array_agg( context_campaign_source )
+            from: inputs/rsIdentifies
+       
+        - entityvar:
+            name: is_active_on_website
+            select: max(case when lower(context_device_type) like '%pc' then 1 else 0 end)
+            from: inputs/rsIdentifies
+
+        - entityvar:
+            name: device_manufacturer
+            from: inputs/rsIdentifies
+            select: first_value(context_device_manufacturer)
+            window:
+              order_by: 
+              - timestamp desc
+            where: context_device_manufacturer is not null and context_device_manufacturer!='' 
+        
+        - entityvar:
+            name: active_days_in_past_7_days
+            select: count(distinct date(timestamp))
+            from: models/tracksUnionPages
+            where:  datediff(day,date(timestamp),date('{{timestamp.Format("2006-01-02 15:04:05")}}')) <= 7 
+        
+        - entityvar:
+            name: active_days_in_past_365_days
+            select: count(distinct date(timestamp))
+            from: models/tracksUnionPages
+            where:  datediff(day,date(timestamp),date('{{timestamp.Format("2006-01-02 15:04:05")}}')) <= 365 
+        - inputvar:
+            name: session_start_time
+            from: models/tracksUnionPages
+            select: min(timestamp)
+            window:
+               partition_by:
+                  - context_session_id
+                  - main_id
+        - inputvar:
+            name: session_end_time
+            from: models/tracksUnionPages
+            select: max(timestamp)
+            window:
+               partition_by:
+                  - context_session_id
+                  - main_id
+        - inputvar:
+            name: session_row_number
+            from: models/tracksUnionPages
+            select: row_number()
+            window:
+                partition_by: 
+                   - context_session_id
+                   - main_id
+                order_by:
+                   - timestamp desc
+        
+        - entityvar:
+            name: total_sessions_till_date
+            from: models/tracksUnionPages
+            select: count(distinct context_session_id)
+            where: context_session_id is not null
+
+        - entityvar:
+            name: total_sessions_last_week
+            from: models/tracksUnionPages
+            select: count(distinct context_session_id)
+            where: context_session_id is not null and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}')) between 0 and 7
+        - entityvar:
+            name: total_sessions_90_days
+            from: models/tracksUnionPages
+            select: count(distinct context_session_id)
+            where: context_session_id is not null and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}')) between 0 and 90
+        - entityvar:
+            name: total_sessions_365_days
+            from: models/tracksUnionPages
+            select: count(distinct context_session_id)
+            where: context_session_id is not null and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}')) between 0 and 365
+
+        - entityvar:
+            name: avg_session_length_in_sec_overall
+            from: models/tracksUnionPages
+            select: avg(datediff(second, session_start_time, session_end_time))
+            where: session_row_number = 1 and context_session_id is not null
+
+
+        - entityvar:
+            name: avg_session_length_in_sec_last_week
+            from: models/tracksUnionPages
+            select: avg(datediff(second, session_start_time, session_end_time))
+            where: context_session_id is not null and session_row_number = 1 and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}')) between 0 and 7
+        - entityvar:
+            name: avg_session_length_in_sec_365_days
+            from: models/tracksUnionPages
+            select: avg(datediff(second, session_start_time, session_end_time))
+            where: context_session_id is not null and session_row_number = 1 and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}'))<=365
+
+        - entityvar:
+            name: first_seen_date
+            from: models/tracksUnionPages
+            select: min(date(session_start_time))
+        - entityvar:
+            name: last_seen_date
+            from: models/tracksUnionPages
+            select: max(date(session_end_time))
+    
+
+
+
+
+      features:
+        - days_since_last_seen
+        - days_since_account_creation
+        - has_mobile_app
+        - state
+        - country
+        - first_name
+        - last_name
+        - currency
+        - device_name
+        - device_type
+        - campaign_sources
+        - is_active_on_website
+        - device_manufacturer
+        - active_days_in_past_7_days
+        - active_days_in_past_365_days
+        - total_sessions_till_date
+        - total_sessions_last_week
+        - total_sessions_90_days
+        - total_sessions_365_days
+        - avg_session_length_in_sec_overall
+        - avg_session_length_in_sec_last_week
+        - avg_session_length_in_sec_365_days
+        - first_seen_date
+        - last_seen_date
+        - is_churned_7_days
