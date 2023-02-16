@@ -18,7 +18,7 @@ model_folders:
 # Entities in this project and their ids.
 entities:
   - name: user
-    id_stitcher: models/shopify_user_id_stitcher
+    id_stitcher: models/rudder_user_id_stitcher
     id_types:
       - main_id
       - user_id

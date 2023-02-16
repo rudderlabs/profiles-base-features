@@ -1,6 +1,6 @@
 # About
 
-This is PB repo to create user features from Shopify event stream tables created using Rudderstack SDK
+This is PB repo to create user features from event stream tables created using Rudderstack SDK
 
 
 ## How to Use
