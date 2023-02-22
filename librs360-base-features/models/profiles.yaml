@@ -244,7 +244,7 @@ models:
             select: first_value(context_campaign_name)
             window:
               order_by: 
-              - timestamp desc
+              - timestamp
             where: context_campaign_name is not null and context_campaign_name!=''
 
             from: inputs/rsPages
@@ -253,7 +253,7 @@ models:
             select: last_value(context_campaign_name)
             window:
               order_by: 
-              - timestamp desc
+              - timestamp
             where: context_campaign_name is not null and context_campaign_name!=''
 
             from: inputs/rsPages
@@ -262,7 +262,7 @@ models:
             select: first_value(context_campaign_source)
             window:
               order_by: 
-              - timestamp desc
+              - timestamp
             where: context_campaign_source is not null and context_campaign_source!=''
 
             from: inputs/rsPages
@@ -271,20 +271,20 @@ models:
             select: last_value(context_campaign_source)
             window:
               order_by: 
-              - timestamp desc
+              - timestamp
             where: context_campaign_source is not null and context_campaign_source!=''
             from: inputs/rsPages
         - entityvar:
-            name: campaigns_found
-            select: array_agg( context_campaign_name) WITHIN GROUP (ORDER BY timestamp desc)
+            name: campaigns_list
+            select: array_agg( context_campaign_name) WITHIN GROUP (ORDER BY timestamp asc)
             from: inputs/rsPages
         - entityvar:
             name: mediums_found
-            select: array_agg( context_campaign_medium) WITHIN GROUP (ORDER BY timestamp desc)
+            select: array_agg( context_campaign_medium) WITHIN GROUP (ORDER BY timestamp asc)
             from: inputs/rsPages
         - entityvar:
             name: sources_found
-            select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp desc)
+            select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             from: inputs/rsPages
     
 
@@ -321,6 +321,6 @@ models:
         - last_campaign_name
         - first_source_name
         - last_source_name
-        - campaigns_found
+        - campaigns_list
         - mediums_found
         - sources_found
