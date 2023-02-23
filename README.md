@@ -86,6 +86,13 @@ Following features get created in the table ```shopify_user_features``` in the s
         - avg_session_length_in_sec_365_days(float)
         - total_sessions_90_days(int)
         - total_sessions_365_days(int)
+        - first_campaign_name(str)
+        - last_campaign_name(str)
+        - first_source_name(str)
+        - last_source_name(str)
+        - campaigns_list(Array[str])
+        - mediums_list(Array[str])
+        - sources_list(Array[str])
 ## The below features are derived from the identify call. If multiple values are found, the most recent value is used.
         - state(Str)
         - country(Str)

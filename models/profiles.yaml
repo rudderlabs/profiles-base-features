@@ -244,7 +244,7 @@ models:
             select: first_value(context_campaign_name)
             window:
               order_by: 
-              - timestamp
+              - timestamp asc
             where: context_campaign_name is not null and context_campaign_name!=''
 
             from: inputs/rsPages
@@ -253,7 +253,7 @@ models:
             select: last_value(context_campaign_name)
             window:
               order_by: 
-              - timestamp
+              - timestamp asc
             where: context_campaign_name is not null and context_campaign_name!=''
 
             from: inputs/rsPages
@@ -262,7 +262,7 @@ models:
             select: first_value(context_campaign_source)
             window:
               order_by: 
-              - timestamp
+              - timestamp asc
             where: context_campaign_source is not null and context_campaign_source!=''
 
             from: inputs/rsPages
@@ -271,7 +271,7 @@ models:
             select: last_value(context_campaign_source)
             window:
               order_by: 
-              - timestamp
+              - timestamp asc
             where: context_campaign_source is not null and context_campaign_source!=''
             from: inputs/rsPages
         - entityvar:
@@ -279,11 +279,11 @@ models:
             select: array_agg( context_campaign_name) WITHIN GROUP (ORDER BY timestamp asc)
             from: inputs/rsPages
         - entityvar:
-            name: mediums_found
+            name: mediums_list
             select: array_agg( context_campaign_medium) WITHIN GROUP (ORDER BY timestamp asc)
             from: inputs/rsPages
         - entityvar:
-            name: sources_found
+            name: sources_list
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             from: inputs/rsPages
     
@@ -322,5 +322,5 @@ models:
         - first_source_name
         - last_source_name
         - campaigns_list
-        - mediums_found
-        - sources_found
+        - mediums_list
+        - sources_list
