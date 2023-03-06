@@ -239,6 +239,53 @@ models:
             name: last_seen_date
             from: models/tracksUnionPages
             select: max(date(session_end_time))
+        - entityvar:
+            name: first_campaign_name
+            select: first_value(context_campaign_name)
+            window:
+              order_by: 
+              - timestamp asc
+            where: context_campaign_name is not null and context_campaign_name!=''
+
+            from: inputs/rsPages
+        - entityvar:
+            name: last_campaign_name
+            select: last_value(context_campaign_name)
+            window:
+              order_by: 
+              - timestamp asc
+            where: context_campaign_name is not null and context_campaign_name!=''
+
+            from: inputs/rsPages
+        - entityvar:
+            name: first_source_name
+            select: first_value(context_campaign_source)
+            window:
+              order_by: 
+              - timestamp asc
+            where: context_campaign_source is not null and context_campaign_source!=''
+
+            from: inputs/rsPages
+        - entityvar:
+            name: last_source_name
+            select: last_value(context_campaign_source)
+            window:
+              order_by: 
+              - timestamp asc
+            where: context_campaign_source is not null and context_campaign_source!=''
+            from: inputs/rsPages
+        - entityvar:
+            name: campaigns_list
+            select: array_agg( context_campaign_name) WITHIN GROUP (ORDER BY timestamp asc)
+            from: inputs/rsPages
+        - entityvar:
+            name: mediums_list
+            select: array_agg( context_campaign_medium) WITHIN GROUP (ORDER BY timestamp asc)
+            from: inputs/rsPages
+        - entityvar:
+            name: sources_list
+            select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
+            from: inputs/rsPages
     
 
 
@@ -270,3 +317,10 @@ models:
         - first_seen_date
         - last_seen_date
         - is_churned_7_days
+        - first_campaign_name
+        - last_campaign_name
+        - first_source_name
+        - last_source_name
+        - campaigns_list
+        - mediums_list
+        - sources_list

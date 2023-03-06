@@ -58,13 +58,12 @@ group by other_id_type;
 See <a href="https://rudderlabs.github.io/pywht">public docs</a> for more information on using PB.
 
 
-There are a few views in the ```views/``` directory. They are supposed to be created in the warehouse before the project is run. Each sql file in the views directory correspond to one view. Run them in the same schema where your input tables exist.
 
 1. Install Profiles tool, from the link above
 2. Setup connection to your warehouse, following the instructions from the documentation
 3. cd to this directory where the git repo is cloned
 4. Do ```pb run```
-Following features get created in the table ```shopify_user_features``` in the schema specified in pb connection (in step 2 above)
+Following features get created in the table ```rudder_user_base_features``` in the schema specified in pb connection (in step 2 above)
 
 
 ## Working features
@@ -86,6 +85,13 @@ Following features get created in the table ```shopify_user_features``` in the s
         - avg_session_length_in_sec_365_days(float)
         - total_sessions_90_days(int)
         - total_sessions_365_days(int)
+        - first_campaign_name(str)
+        - last_campaign_name(str)
+        - first_source_name(str)
+        - last_source_name(str)
+        - campaigns_list(Array[str])
+        - mediums_list(Array[str])
+        - sources_list(Array[str])
 ## The below features are derived from the identify call. If multiple values are found, the most recent value is used.
         - state(Str)
         - country(Str)
