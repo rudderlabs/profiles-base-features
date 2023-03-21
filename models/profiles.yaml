@@ -7,10 +7,10 @@ models:
       entity_key: user
       main_id_type: main_id
       edge_sources:
-        - inputs/rsIdentifies
-        - inputs/rsTracks
-        - inputs/rsPages
-  - name: tracksUnionPages
+        - from: inputs/rsIdentifies
+        - from: inputs/rsTracks
+        - from: inputs/rsPages
+  - name: rsTracksUnionPages
     model_type: sql_template
     model_spec:
       validity_time: 24h # 1 day
@@ -18,9 +18,16 @@ models:
         output_type: ephemeral
         run_type: discrete
       single_sql: |
-        {% with tracks = this.DeRef("inputs/rsTracks") pages = this.DeRef("inputs/rsPages") %}
-          select * from {{tracks.GetSelectTarget()}}
-            union all select * from {{pages.GetSelectTarget()}}
+        {% with Tracks = this.DeRef("inputs/rsTracks") Pages = this.DeRef("inputs/rsPages") %}
+            select user_id, anonymous_id, context_session_id, timestamp from (
+            select ANONYMOUS_ID,USER_ID,timestamp::date as dt,CONTEXT_SESSION_ID,min(timestamp) as timestamp from {{Tracks}} group by user_id, anonymous_id, context_session_id, timestamp::date
+            union all 
+            select ANONYMOUS_ID,USER_ID,timestamp::date as dt,CONTEXT_SESSION_ID,max(timestamp) as timestamp from {{Tracks}} group by user_id, anonymous_id, context_session_id, timestamp::date) a
+            union all
+            select user_id, anonymous_id, context_session_id, timestamp from        
+            (select ANONYMOUS_ID,USER_ID,timestamp::date as dt,CONTEXT_SESSION_ID,min(timestamp) as timestamp from {{Pages}} group by user_id, anonymous_id, context_session_id, timestamp::date
+            union all 
+            select ANONYMOUS_ID,USER_ID,timestamp::date as dt,CONTEXT_SESSION_ID,max(timestamp) as timestamp from {{Pages}} group by user_id, anonymous_id, context_session_id, timestamp::date) 
         {% endwith %}
       ids:
         - select: "user_id"
@@ -37,43 +44,43 @@ models:
       validity_time: 24h # 1 day
       entity_key: user
       vars:
-        # - entityvar:
+        # - entity_var:
         #     name: max_timestamp_tracks
         #     select: max(timestamp)
         #     from: inputs/rsTracks
 
-        # - entityvar:
+        # - entity_var:
         #     name: max_timestamp_pages
         #     select: max(timestamp)
         #     from: inputs/rsPages
 
 
-        - entityvar:
+        - entity_var:
             name: max_timestamp_bw_tracks_pages
             select: max(timestamp)
-            from: models/tracksUnionPages
+            from: models/rsTracksUnionPages
         #days since last seen
-        - entityvar:
+        - entity_var:
             name: days_since_last_seen
             select: datediff(day, date(max_timestamp_bw_tracks_pages),date('{{timestamp.Format("2006-01-02 15:04:05")}}'))
 #       #Churn features
-        - entityvar:
+        - entity_var:
             name: is_churned_7_days
             select: case when days_since_last_seen > 7 then 1 else 0 end
        
      
-        - entityvar:
+        - entity_var:
             name: days_since_account_creation
             select: datediff(days,date(min(timestamp)),date('{{timestamp.Format("2006-01-02 15:04:05")}}'))
 
             from: inputs/rsIdentifies
 
-        - entityvar:
+        - entity_var:
             name: has_mobile_app
             select: max(case when lower(context_device_type) in ('android', 'ios') then 1 else 0 end)
             from: inputs/rsIdentifies
 
-        - entityvar:
+        - entity_var:
             name: state
             from: inputs/rsIdentifies
             select: first_value(state)
@@ -82,7 +89,7 @@ models:
               - timestamp desc
             where: state is not null and state!=''
 
-        - entityvar:
+        - entity_var:
             name: country
             from: inputs/rsIdentifies
             select: first_value(address_country)
@@ -92,7 +99,7 @@ models:
             where: address_country is not null and address_country!=''
 
 
-        - entityvar:
+        - entity_var:
             name: first_name
             from: inputs/rsIdentifies
             select: first_value(first_name)
@@ -100,7 +107,7 @@ models:
               order_by: 
               - timestamp desc
             where: first_name is not null and first_name!=''
-        - entityvar:
+        - entity_var:
             name: last_name
             from: inputs/rsIdentifies
             select: first_value(last_name)
@@ -108,7 +115,7 @@ models:
               order_by: 
               - timestamp desc
             where: last_name is not null and last_name!=''
-        - entityvar:
+        - entity_var:
             name: currency
             from: inputs/rsIdentifies
             select: first_value(currency)
@@ -117,7 +124,7 @@ models:
               - timestamp desc
             where: currency is not null and currency!=''
 
-        - entityvar:
+        - entity_var:
             name: device_name
             from: inputs/rsIdentifies
             select: first_value(context_device_name)
@@ -125,7 +132,7 @@ models:
               order_by: 
               - timestamp desc
             where: context_device_name is not null and context_device_name!=''
-        - entityvar:
+        - entity_var:
             name: device_type
             from: inputs/rsIdentifies
             select: first_value(context_device_type)
@@ -134,17 +141,17 @@ models:
               - timestamp desc
             where: context_device_type is not null and context_device_type!=''
         
-        - entityvar:
+        - entity_var:
             name: campaign_sources
             select: array_agg( context_campaign_source )
             from: inputs/rsIdentifies
        
-        - entityvar:
+        - entity_var:
             name: is_active_on_website
             select: max(case when lower(context_device_type) like '%pc' then 1 else 0 end)
             from: inputs/rsIdentifies
 
-        - entityvar:
+        - entity_var:
             name: device_manufacturer
             from: inputs/rsIdentifies
             select: first_value(context_device_manufacturer)
@@ -153,36 +160,36 @@ models:
               - timestamp desc
             where: context_device_manufacturer is not null and context_device_manufacturer!='' 
         
-        - entityvar:
+        - entity_var:
             name: active_days_in_past_7_days
             select: count(distinct date(timestamp))
-            from: models/tracksUnionPages
+            from: models/rsTracksUnionPages
             where:  datediff(day,date(timestamp),date('{{timestamp.Format("2006-01-02 15:04:05")}}')) <= 7 
         
-        - entityvar:
+        - entity_var:
             name: active_days_in_past_365_days
             select: count(distinct date(timestamp))
-            from: models/tracksUnionPages
+            from: models/rsTracksUnionPages
             where:  datediff(day,date(timestamp),date('{{timestamp.Format("2006-01-02 15:04:05")}}')) <= 365 
-        - inputvar:
+        - input_var:
             name: session_start_time
-            from: models/tracksUnionPages
+            from: models/rsTracksUnionPages
             select: min(timestamp)
             window:
                partition_by:
                   - context_session_id
                   - main_id
-        - inputvar:
+        - input_var:
             name: session_end_time
-            from: models/tracksUnionPages
+            from: models/rsTracksUnionPages
             select: max(timestamp)
             window:
                partition_by:
                   - context_session_id
                   - main_id
-        - inputvar:
+        - input_var:
             name: session_row_number
-            from: models/tracksUnionPages
+            from: models/rsTracksUnionPages
             select: row_number()
             window:
                 partition_by: 
@@ -191,55 +198,55 @@ models:
                 order_by:
                    - timestamp desc
         
-        - entityvar:
+        - entity_var:
             name: total_sessions_till_date
-            from: models/tracksUnionPages
+            from: models/rsTracksUnionPages
             select: count(distinct context_session_id)
             where: context_session_id is not null
 
-        - entityvar:
+        - entity_var:
             name: total_sessions_last_week
-            from: models/tracksUnionPages
+            from: models/rsTracksUnionPages
             select: count(distinct context_session_id)
             where: context_session_id is not null and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}')) between 0 and 7
-        - entityvar:
+        - entity_var:
             name: total_sessions_90_days
-            from: models/tracksUnionPages
+            from: models/rsTracksUnionPages
             select: count(distinct context_session_id)
             where: context_session_id is not null and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}')) between 0 and 90
-        - entityvar:
+        - entity_var:
             name: total_sessions_365_days
-            from: models/tracksUnionPages
+            from: models/rsTracksUnionPages
             select: count(distinct context_session_id)
             where: context_session_id is not null and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}')) between 0 and 365
 
-        - entityvar:
+        - entity_var:
             name: avg_session_length_in_sec_overall
-            from: models/tracksUnionPages
+            from: models/rsTracksUnionPages
             select: avg(datediff(second, session_start_time, session_end_time))
             where: session_row_number = 1 and context_session_id is not null
 
 
-        - entityvar:
+        - entity_var:
             name: avg_session_length_in_sec_last_week
-            from: models/tracksUnionPages
+            from: models/rsTracksUnionPages
             select: avg(datediff(second, session_start_time, session_end_time))
             where: context_session_id is not null and session_row_number = 1 and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}')) between 0 and 7
-        - entityvar:
+        - entity_var:
             name: avg_session_length_in_sec_365_days
-            from: models/tracksUnionPages
+            from: models/rsTracksUnionPages
             select: avg(datediff(second, session_start_time, session_end_time))
             where: context_session_id is not null and session_row_number = 1 and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}'))<=365
 
-        - entityvar:
+        - entity_var:
             name: first_seen_date
-            from: models/tracksUnionPages
+            from: models/rsTracksUnionPages
             select: min(date(session_start_time))
-        - entityvar:
+        - entity_var:
             name: last_seen_date
-            from: models/tracksUnionPages
+            from: models/rsTracksUnionPages
             select: max(date(session_end_time))
-        - entityvar:
+        - entity_var:
             name: first_campaign_name
             select: first_value(context_campaign_name)
             window:
@@ -248,7 +255,7 @@ models:
             where: context_campaign_name is not null and context_campaign_name!=''
 
             from: inputs/rsPages
-        - entityvar:
+        - entity_var:
             name: last_campaign_name
             select: last_value(context_campaign_name)
             window:
@@ -257,7 +264,7 @@ models:
             where: context_campaign_name is not null and context_campaign_name!=''
 
             from: inputs/rsPages
-        - entityvar:
+        - entity_var:
             name: first_source_name
             select: first_value(context_campaign_source)
             window:
@@ -266,7 +273,7 @@ models:
             where: context_campaign_source is not null and context_campaign_source!=''
 
             from: inputs/rsPages
-        - entityvar:
+        - entity_var:
             name: last_source_name
             select: last_value(context_campaign_source)
             window:
@@ -274,15 +281,15 @@ models:
               - timestamp asc
             where: context_campaign_source is not null and context_campaign_source!=''
             from: inputs/rsPages
-        - entityvar:
+        - entity_var:
             name: campaigns_list
             select: array_agg( context_campaign_name) WITHIN GROUP (ORDER BY timestamp asc)
             from: inputs/rsPages
-        - entityvar:
+        - entity_var:
             name: mediums_list
             select: array_agg( context_campaign_medium) WITHIN GROUP (ORDER BY timestamp asc)
             from: inputs/rsPages
-        - entityvar:
+        - entity_var:
             name: sources_list
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             from: inputs/rsPages
