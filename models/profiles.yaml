@@ -5,7 +5,7 @@ models:
     model_spec:
       validity_time: 24h # 1 day
       entity_key: user
-      main_id_type: main_id
+      main_id_type: rudder_id
       edge_sources:
         - from: inputs/rsIdentifies
         - from: inputs/rsTracks
@@ -44,16 +44,6 @@ models:
       validity_time: 24h # 1 day
       entity_key: user
       vars:
-        # - entity_var:
-        #     name: max_timestamp_tracks
-        #     select: max(timestamp)
-        #     from: inputs/rsTracks
-
-        # - entity_var:
-        #     name: max_timestamp_pages
-        #     select: max(timestamp)
-        #     from: inputs/rsPages
-
 
         - entity_var:
             name: max_timestamp_bw_tracks_pages
@@ -67,6 +57,7 @@ models:
         - entity_var:
             name: is_churned_7_days
             select: case when days_since_last_seen > 7 then 1 else 0 end
+            description: Depending on the n value, it specifies if there is any activity observed in the last 7 days.
        
      
         - entity_var:
@@ -165,12 +156,15 @@ models:
             select: count(distinct date(timestamp))
             from: models/rsTracksUnionPages
             where:  datediff(day,date(timestamp),date('{{timestamp.Format("2006-01-02 15:04:05")}}')) <= 7 
+            description: Out of 7 days, how many days have recorded an event till date including today
         
         - entity_var:
             name: active_days_in_past_365_days
             select: count(distinct date(timestamp))
             from: models/rsTracksUnionPages
             where:  datediff(day,date(timestamp),date('{{timestamp.Format("2006-01-02 15:04:05")}}')) <= 365 
+            description: Out of 365 days, how many days have recorded an event till date including today
+
         - input_var:
             name: session_start_time
             from: models/rsTracksUnionPages
@@ -178,7 +172,8 @@ models:
             window:
                partition_by:
                   - context_session_id
-                  - main_id
+                  - rudder_id
+            description: Describes the start time of session of a specific context_id
         - input_var:
             name: session_end_time
             from: models/rsTracksUnionPages
@@ -186,7 +181,9 @@ models:
             window:
                partition_by:
                   - context_session_id
-                  - main_id
+                  - rudder_id
+            description: Describes the end time of session of a specific context_id
+            
         - input_var:
             name: session_row_number
             from: models/rsTracksUnionPages
@@ -194,58 +191,68 @@ models:
             window:
                 partition_by: 
                    - context_session_id
-                   - main_id
+                   - rudder_id
                 order_by:
                    - timestamp desc
+            description: A row number for all the events within a single session. This is used to compute some of the session based features/
         
         - entity_var:
             name: total_sessions_till_date
             from: models/rsTracksUnionPages
             select: count(distinct context_session_id)
             where: context_session_id is not null
+            description: Total individual sessions created till date.
 
         - entity_var:
             name: total_sessions_last_week
             from: models/rsTracksUnionPages
             select: count(distinct context_session_id)
             where: context_session_id is not null and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}')) between 0 and 7
+            description:  total number of sessions over last 7 days.        
         - entity_var:
             name: total_sessions_90_days
             from: models/rsTracksUnionPages
             select: count(distinct context_session_id)
             where: context_session_id is not null and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}')) between 0 and 90
+            description:  total number of sessions over last 90 days. 
         - entity_var:
             name: total_sessions_365_days
             from: models/rsTracksUnionPages
             select: count(distinct context_session_id)
             where: context_session_id is not null and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}')) between 0 and 365
-
+            description:  total number of sessions over last 356 days.
         - entity_var:
             name: avg_session_length_in_sec_overall
             from: models/rsTracksUnionPages
             select: avg(datediff(second, session_start_time, session_end_time))
             where: session_row_number = 1 and context_session_id is not null
-
+            description: Average session length (in seconds) of all the user sessions till date.
 
         - entity_var:
             name: avg_session_length_in_sec_last_week
             from: models/rsTracksUnionPages
             select: avg(datediff(second, session_start_time, session_end_time))
             where: context_session_id is not null and session_row_number = 1 and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}')) between 0 and 7
+            description: Average session length (in seconds) of all the user sessions that started in last 7 days
+
         - entity_var:
             name: avg_session_length_in_sec_365_days
             from: models/rsTracksUnionPages
             select: avg(datediff(second, session_start_time, session_end_time))
             where: context_session_id is not null and session_row_number = 1 and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}'))<=365
+            description: Average session length (in seconds) of all the user sessions that started in last 365 days
 
         - entity_var:
             name: first_seen_date
             from: models/rsTracksUnionPages
             select: min(date(session_start_time))
+            description: The first date on which an event has been recorded by the user
+
         - entity_var:
             name: last_seen_date
             from: models/rsTracksUnionPages
             select: max(date(session_end_time))
+            description: The latest date on which an event has been recorded by the user
         - entity_var:
             name: first_campaign_name
             select: first_value(context_campaign_name)
@@ -253,6 +260,7 @@ models:
               order_by: 
               - timestamp asc
             where: context_campaign_name is not null and context_campaign_name!=''
+            description: First campaign from which a user has visited the app
 
             from: inputs/rsPages
         - entity_var:
@@ -262,6 +270,7 @@ models:
               order_by: 
               - timestamp asc
             where: context_campaign_name is not null and context_campaign_name!=''
+            description: Latest campaign from which a user has visited the app
 
             from: inputs/rsPages
         - entity_var:
@@ -271,6 +280,7 @@ models:
               order_by: 
               - timestamp asc
             where: context_campaign_source is not null and context_campaign_source!=''
+            description: First source from which a user has visited the app
 
             from: inputs/rsPages
         - entity_var:
@@ -281,22 +291,23 @@ models:
               - timestamp asc
             where: context_campaign_source is not null and context_campaign_source!=''
             from: inputs/rsPages
+            description: Last source from which a user has visited the app
+
         - entity_var:
             name: campaigns_list
             select: array_agg( context_campaign_name) WITHIN GROUP (ORDER BY timestamp asc)
             from: inputs/rsPages
+            description: list of all campaigns from which a user has visited the app, sorted in chronological order, from oldest to newest
         - entity_var:
             name: mediums_list
             select: array_agg( context_campaign_medium) WITHIN GROUP (ORDER BY timestamp asc)
             from: inputs/rsPages
+            description: list of all mediums from which a user has visited the app, sorted in chronological order, from oldest to newest
         - entity_var:
             name: sources_list
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             from: inputs/rsPages
-    
-
-
-
+            description: list of all sources from which a user has visited the app, sorted in chronological order, from oldest to newest
 
       features:
         - days_since_last_seen
