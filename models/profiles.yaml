@@ -17,6 +17,17 @@ models:
     model_spec:
       validity_time: 24h # 1 day
       entity_key: user
+      macros:
+        - name: macro_datediff
+          inputs: 
+            - column
+          value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) {% else %} datediff(day, date({{column}}::timestamp), GETDATE()) {% endif %}"
+        - name: macro_datediff_n
+          inputs: 
+            - column
+            - number_of_days
+          value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
+ 
       vars:
 
         - entity_var:
@@ -26,8 +37,9 @@ models:
         #days since last seen
         - entity_var:
             name: days_since_last_seen
-            select: datediff(day, date(max_timestamp_bw_tracks_pages),date('{{timestamp.Format("2006-01-02 15:04:05")}}'))
-#       #Churn features
+            # select: datediff(day, date(max_timestamp_bw_tracks_pages),date('{{timestamp.Format("2006-01-02 15:04:05")}}'))
+            select: "{{macro_datediff('max_timestamp_bw_tracks_pages')}}"
+#Churn features
         - entity_var:
             name: is_churned_7_days
             select: case when days_since_last_seen > 7 then 1 else 0 end
@@ -36,8 +48,8 @@ models:
      
         - entity_var:
             name: days_since_account_creation
-            select: datediff(days,date(min(timestamp)),date('{{timestamp.Format("2006-01-02 15:04:05")}}'))
-
+            # select: datediff(days,date(min(timestamp)),date('{{timestamp.Format("2006-01-02 15:04:05")}}'))
+            select: "{{macro_datediff('min(timestamp)')}}"
             from: inputs/rsIdentifies
 
         - entity_var:
@@ -129,14 +141,17 @@ models:
             name: active_days_in_past_7_days
             select: count(distinct date(timestamp))
             from: models/rsTracksUnionPages
-            where:  datediff(day,date(timestamp),date('{{timestamp.Format("2006-01-02 15:04:05")}}')) <= 7 
+            # where:  datediff(day,date(timestamp),date('{{timestamp.Format("2006-01-02 15:04:05")}}')) <= 7 
+            where: "{{macro_datediff_n('timestamp','7')}}"
             description: Out of 7 days, how many days have recorded an event till date including today
         
         - entity_var:
             name: active_days_in_past_365_days
             select: count(distinct date(timestamp))
             from: models/rsTracksUnionPages
-            where:  datediff(day,date(timestamp),date('{{timestamp.Format("2006-01-02 15:04:05")}}')) <= 365 
+            # where:  datediff(day,date(timestamp),date('{{timestamp.Format("2006-01-02 15:04:05")}}')) <= 365
+            where: "{{macro_datediff_n('timestamp','365')}}"
+ 
             description: Out of 365 days, how many days have recorded an event till date including today
 
         - input_var:
@@ -181,19 +196,23 @@ models:
             name: total_sessions_last_week
             from: models/rsTracksUnionPages
             select: count(distinct context_session_id)
-            where: context_session_id is not null and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}')) between 0 and 7
+            # where: context_session_id is not null and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}')) between 0 and 7
+            where: " context_session_id is not null and {{macro_datediff('session_start_time')}} between 0 and 7"
             description:  total number of sessions over last 7 days.        
         - entity_var:
             name: total_sessions_90_days
             from: models/rsTracksUnionPages
             select: count(distinct context_session_id)
-            where: context_session_id is not null and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}')) between 0 and 90
+            # where: context_session_id is not null and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}')) between 0 and 90
+            where: " context_session_id is not null and {{macro_datediff('session_start_time')}} between 0 and 90"
+
             description:  total number of sessions over last 90 days. 
         - entity_var:
             name: total_sessions_365_days
             from: models/rsTracksUnionPages
             select: count(distinct context_session_id)
-            where: context_session_id is not null and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}')) between 0 and 365
+            # where: context_session_id is not null and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}')) between 0 and 365
+            where: " context_session_id is not null and {{macro_datediff('session_start_time')}} between 0 and 365 "            
             description:  total number of sessions over last 356 days.
         - entity_var:
             name: avg_session_length_in_sec_overall
@@ -206,14 +225,16 @@ models:
             name: avg_session_length_in_sec_last_week
             from: models/rsTracksUnionPages
             select: avg(datediff(second, session_start_time, session_end_time))
-            where: context_session_id is not null and session_row_number = 1 and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}')) between 0 and 7
+            # where: context_session_id is not null and session_row_number = 1 and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}')) between 0 and 7
+            where: context_session_id is not null and session_row_number = 1 and {{macro_datediff('session_start_time')}}  between 0 and 7
             description: Average session length (in seconds) of all the user sessions that started in last 7 days
 
         - entity_var:
             name: avg_session_length_in_sec_365_days
             from: models/rsTracksUnionPages
             select: avg(datediff(second, session_start_time, session_end_time))
-            where: context_session_id is not null and session_row_number = 1 and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}'))<=365
+            # where: context_session_id is not null and session_row_number = 1 and datediff(day, date(session_start_time), date('{{timestamp.Format("2006-01-02 15:04:05")}}'))<=365
+            where: "context_session_id is not null and session_row_number = 1 and {{macro_datediff_n('session_start_time','365')}}"
             description: Average session length (in seconds) of all the user sessions that started in last 365 days
 
         - entity_var:
