@@ -1,7 +1,6 @@
-# This is a sample file, for detailed reference see: https://rudderlabs.github.io/pywht/
 inputs:
   - name: rsIdentifies
-    table: RUDDERSTACK_TEST_DB.DATA_APPS_SIMULATED_SHOPIFY.IDENTIFIES 
+    table: RUDDERSTACK_TEST_DB.DATA_APPS_SIMULATED_SHOPIFY.IDENTIFIES
     occurred_at_col: timestamp
     ids:
       - select: "user_id"
@@ -33,7 +32,7 @@ inputs:
       - select: "anonymous_id"
         type: anonymous_id
         entity: user
-  
-  
-  
-    
+
+
+
+
