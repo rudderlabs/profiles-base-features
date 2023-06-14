@@ -13,8 +13,8 @@ inputs:
         type: email
         entity: user
     source_metadata:
-      role: *
-      category: webhook|null
+      role: "*"
+      category: "webhook|null"
   - name: rsTracks
     table: RUDDERSTACK_TEST_DB.DATA_APPS_SIMULATED_SHOPIFY.TRACKS
     occurred_at_col: timestamp
@@ -26,8 +26,8 @@ inputs:
         type: anonymous_id
         entity: user
     source_metadata:
-      role: *
-      category: webhook|null
+      role: "*"
+      category: "webhook|null"
   - name: rsPages
     table: RUDDERSTACK_TEST_DB.DATA_APPS_SIMULATED_SHOPIFY.PAGES
     occurred_at_col: timestamp
@@ -39,8 +39,8 @@ inputs:
         type: anonymous_id
         entity: user
     source_metadata:
-      role: *
-      category: webhook|null
+      role: "*"
+      category: "webhook|null"
 
 
 
