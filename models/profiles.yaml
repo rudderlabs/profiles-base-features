@@ -50,11 +50,6 @@ models:
             from: inputs/rsIdentifies
 
         - entity_var:
-            name: has_mobile_app
-            select: max(case when lower(context_device_type) in ('android', 'ios') then 1 else 0 end)
-            from: inputs/rsIdentifies
-
-        - entity_var:
             name: state
             from: inputs/rsIdentifies
             select: first_value(state)
@@ -100,41 +95,9 @@ models:
             where: currency is not null and currency!=''
 
         - entity_var:
-            name: device_name
-            from: inputs/rsIdentifies
-            select: first_value(context_device_name)
-            window:
-              order_by:
-              - timestamp desc
-            where: context_device_name is not null and context_device_name!=''
-
-        - entity_var:
-            name: device_type
-            from: inputs/rsIdentifies
-            select: first_value(context_device_type)
-            window:
-              order_by:
-              - timestamp desc
-            where: context_device_type is not null and context_device_type!=''
-
-        - entity_var:
             name: campaign_sources
             select: array_agg( context_campaign_source )
             from: inputs/rsIdentifies
-
-        - entity_var:
-            name: is_active_on_website
-            select: max(case when lower(context_device_type) like '%pc' then 1 else 0 end)
-            from: inputs/rsIdentifies
-
-        - entity_var:
-            name: device_manufacturer
-            from: inputs/rsIdentifies
-            select: first_value(context_device_manufacturer)
-            window:
-              order_by:
-              - timestamp desc
-            where: context_device_manufacturer is not null and context_device_manufacturer!=''
 
         - entity_var:
             name: active_days_in_past_7_days
@@ -304,17 +267,12 @@ models:
       features:
         - days_since_last_seen
         - days_since_account_creation
-        - has_mobile_app
         - state
         - country
         - first_name
         - last_name
         - currency
-        - device_name
-        - device_type
         - campaign_sources
-        - is_active_on_website
-        - device_manufacturer
         - active_days_in_past_7_days
         - active_days_in_past_365_days
         - total_sessions_till_date
