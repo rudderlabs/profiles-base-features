@@ -37,12 +37,16 @@ models:
         - entity_var:
             name: days_since_last_seen
             select: "{{macro_datediff('max_timestamp_bw_tracks_pages')}}"
+            dependencies:
+              - max_timestamp_bw_tracks_pages
 
         #Churn features
         - entity_var:
             name: is_churned_7_days
             select: case when days_since_last_seen > 7 then 1 else 0 end
             description: Depending on the n value, it specifies if there is any activity observed in the last 7 days.
+            dependencies:
+              - days_since_last_seen
 
         - entity_var:
             name: days_since_account_creation
