@@ -20,10 +20,18 @@ entities:
   - name: user
     id_stitcher: models/rudder_user_id_stitcher
     id_types:
+      - user_id 
+      - anonymous_id
+      - email
+
+  - name: account
+    id_stitcher: models/rudder_account_id_stitcher
+    id_types:
       - user_id
       - anonymous_id
       - email
-      - cart_token
+      - domain
+
 
 id_types:
   - name: user_id
