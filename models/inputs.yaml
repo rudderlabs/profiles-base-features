@@ -38,6 +38,12 @@ inputs:
       - select: "anonymous_id"
         type: anonymous_id
         entity: user
+      - select: "user_id"
+        type: user_id
+        entity: account
+      - select: "anonymous_id"
+        type: anonymous_id
+        entity: account
     source_metadata:
       role: "*"
       category: "webhook|null"
@@ -51,6 +57,12 @@ inputs:
       - select: "anonymous_id"
         type: anonymous_id
         entity: user
+      - select: "user_id"
+        type: user_id
+        entity: account
+      - select: "anonymous_id"
+        type: anonymous_id
+        entity: account
     source_metadata:
       role: "*"
       category: "webhook|null"
