@@ -13,7 +13,7 @@ models:
     model_type: id_stitcher
     model_spec:
       validity_time: 24h # 1 day
-      entity_key: user
+      entity_key: account
       edge_sources:
         - from: inputs/rsIdentifies
         - from: inputs/rsTracks

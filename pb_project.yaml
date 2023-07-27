@@ -35,7 +35,7 @@ entities:
 
 id_types:
   - name: user_id
-  - name: cart_token
+  - name: domain
   - name: anonymous_id
     filters:
       - type: exclude
