@@ -18,14 +18,14 @@ model_folders:
 # Entities in this project and their ids.
 entities:
   - name: user
-    id_stitcher: models/rudder_user_id_stitcher
+    id_stitcher: models/user_id_graph
     id_types:
       - user_id 
       - anonymous_id
       - email
 
   - name: account
-    id_stitcher: models/rudder_account_id_stitcher
+    id_stitcher: models/account_id_graph
     id_types:
       - user_id
       - anonymous_id

@@ -12,6 +12,19 @@ inputs:
       - select: "lower(email)"
         type: email
         entity: user
+      #Repeat the above but for an account  
+      - select: "user_id"
+        type: user_id
+        entity: account
+      - select: "anonymous_id"
+        type: anonymous_id
+        entity: account
+      - select: "lower(email)"
+        type: email
+        entity: account
+      - select: "lower(split_part(email, '@', 2))"
+        type: domain
+        entity: account
     source_metadata:
       role: "*"
       category: "webhook|null"
