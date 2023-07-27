@@ -36,6 +36,13 @@ entities:
 id_types:
   - name: user_id
   - name: domain
+    filters:
+      - type: exclude
+        value: ""
+      - type: exclude
+        value: "unknown"
+      - type: exclude
+        value: "NaN"
   - name: anonymous_id
     filters:
       - type: exclude
