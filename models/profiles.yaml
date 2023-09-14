@@ -234,6 +234,11 @@ models:
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: list of all sources from which a user has visited the app, sorted in chronological order, from oldest to newest
+        - entity_var:
+            name: EricsTest
+            from: inputs/rsPages
+            select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
+            description: erics github test
       features:
         - days_since_last_seen
         - days_since_account_creation
@@ -262,3 +267,4 @@ models:
         - campaigns_list
         - mediums_list
         - sources_list
+        - EricsTest
