@@ -238,27 +238,27 @@ models:
             name: DeviceCount
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: erics github test
+            description: how many devices does the customer own
         - entity_var:
             name: DevicesOwned
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: erics github test
+            description: which devices does the customer already own
         - entity_var:
             name: SleepQuizResults
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: erics github test
+            description: did the user take the quiz
         - entity_var:
             name: lastCheckOutStage
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: erics github test
+            description: Where did user churn from checkout
         - entity_var:
             name: lastProductViewed
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: erics github test
+            description: last product viewed for customization
       features:
         - days_since_last_seen
         - days_since_account_creation
