@@ -235,30 +235,35 @@ models:
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: list of all sources from which a user has visited the app, sorted in chronological order, from oldest to newest
         - entity_var:
-            name: DeviceCount
+            name: lastservicedate
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: how many devices does the customer own
+            description: date of last service
         - entity_var:
-            name: DevicesOwned
+            name: lastservicetype
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: which devices does the customer already own
+            description: type of last service appointment
         - entity_var:
-            name: SleepQuizResults
+            name: lastservicemethod
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: did the user take the quiz
+            description: equipment used in last service appointment
         - entity_var:
-            name: lastCheckOutStage
+            name: waxpassowner
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Where did user churn from checkout
+            description: Boolean whether user owns wax pass
         - entity_var:
-            name: lastProductViewed
+            name: waxpassservices
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: last product viewed for customization
+            description: all services used
+        - entity_var:
+            name: waxpassredemptionsremaining
+            from: inputs/rsPages
+            select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
+            description: number of redemptions remaining on wax pass
       features:
         - days_since_last_seen
         - days_since_account_creation
@@ -287,8 +292,9 @@ models:
         - campaigns_list
         - mediums_list
         - sources_list
-        - DeviceCount
-        - DevicesOwned
-        - SleepQuizResults
-        - lastCheckOutStage
-        - lastProductViewed
+        - lastservicedate
+        - lastservicetype
+        - lastservicemethod
+        - waxpassowner
+        - waxpassservices
+        - waxpassredemptionsremaining
