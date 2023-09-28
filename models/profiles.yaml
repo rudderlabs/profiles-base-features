@@ -248,27 +248,27 @@ models:
             name: total_payment_count
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: how many sessions have the patient had
+            description: how many payments have been made
         - entity_var:
             name: total_interest
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: patients most common interest
+            description: accumulated interest paid
         - entity_var:
             name: interest_rate
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: all services used
+            description: current loan interest rate
         - entity_var:
             name: lender
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: current therapy provider
+            description: current lender
         - entity_var:
             name: last_session_date
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: last session with a therapist
+            description: last session with a banker
       features:
         - days_since_last_seen
         - days_since_account_creation
