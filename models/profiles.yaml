@@ -235,32 +235,32 @@ models:
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: list of all sources from which a user has visited the app, sorted in chronological order, from oldest to newest
         - entity_var:
-            name: support_call_customer
+            name: loan_subject
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: did they call in for telephone support
+            description: what is the purpose of the loan
         - entity_var:
             name: content_count
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: how many knowledge content did they consume
         - entity_var:
-            name: total_session_count
+            name: total_payment_count
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: how many sessions have the patient had
         - entity_var:
-            name: learn_interest
+            name: total_interest
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: patients most common interest
         - entity_var:
-            name: therapy_type
+            name: interest_rate
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: all services used
         - entity_var:
-            name: therapist
+            name: lender
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: current therapy provider
@@ -297,10 +297,10 @@ models:
         - campaigns_list
         - mediums_list
         - sources_list
-        - support_call_customer
+        - loan_subject
         - content_count
-        - total_session_count
-        - learn_interest
-        - therapy_type
-        - therapist
+        - total_payment_count
+        - total_interest
+        - interest_rate
+        - lender
         - last_session_date
