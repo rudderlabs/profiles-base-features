@@ -1,5 +1,5 @@
 models:
-  - name: rudder_user_id_stitcher
+  - name: user_id_graph
     model_type: id_stitcher
     model_spec:
       validity_time: 24h # 1 day
@@ -9,7 +9,7 @@ models:
         - from: inputs/rsTracks
         - from: inputs/rsPages
           # Remove the section below, if you don't want to generate a feature table
-  - name: rudder_user_base_features
+  - name: user_profile
     model_type: feature_table_model
     model_spec:
       validity_time: 24h # 1 day
