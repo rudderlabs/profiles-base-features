@@ -9,7 +9,7 @@ models:
         - from: inputs/rsTracks
         - from: inputs/rsPages
           # Remove the section below, if you don't want to generate a feature table
-  - name: temp_table
+  - name: pages_orderby_table
     model_type: sql_template
     model_spec:
       validity_time: 24h # 1 day
@@ -281,17 +281,17 @@ models:
             description: Last source from which a user has visited the app
         - entity_var:
             name: campaigns_list
-            from: inputs/rsPages
+            from: models/pages_orderby_table
             select: array_agg( context_campaign_name)
             description: list of all campaigns from which a user has visited the app, sorted in chronological order, from oldest to newest
         - entity_var:
             name: mediums_list
-            from: inputs/rsPages
+            from: models/pages_orderby_table
             select: array_agg( context_campaign_medium)
             description: list of all mediums from which a user has visited the app, sorted in chronological order, from oldest to newest
         - entity_var:
             name: sources_list
-            from: inputs/rsPages
+            from: models/pages_orderby_table
             select: array_agg( context_campaign_source)
             description: list of all sources from which a user has visited the app, sorted in chronological order, from oldest to newest
             dependencies:
