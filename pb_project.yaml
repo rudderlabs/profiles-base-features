@@ -1,7 +1,7 @@
 # Project name
 name: rudderstack_profiles_poc
 # Project's yaml schema version
-schema_version: 42
+schema_version: 44
 # WH Connection Profile to use.
 connection: rudderstack_poc
 # Whether to allow inputs having no timestamps,
@@ -18,10 +18,8 @@ entities:
       - user_id
       - anonymous_id
       - email
-      - cart_token
 id_types:
   - name: user_id
-  - name: cart_token
   - name: anonymous_id
     filters:
       - type: exclude
