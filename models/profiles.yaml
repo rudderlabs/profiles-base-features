@@ -9,116 +9,143 @@ models:
         - from: inputs/rsTracks
         - from: inputs/rsPages
           # Remove the section below, if you don't want to generate a feature table
+  - name: pages_orderby_table
+    model_type: sql_template
+    model_spec:
+      validity_time: 24h # 1 day
+      materialization:
+        output_type: ephemeral
+        run_type: discrete
+      single_sql: |
+        {% with Pages = this.DeRef("inputs/rsPages") %}
+            select * from {{Pages}} order by timestamp asc
+        {% endwith %}
+      ids:
+        - select: "user_id"
+          type: user_id
+          entity: user
+          to_default_stitcher: true
+        - select: "anonymous_id"
+          type: anonymous_id
+          entity: user
+          to_default_stitcher: true
+      contract:
+        is_optional: false
+        is_event_stream: false
+        with_entity_ids:
+          - user
+        with_columns:
+          - name: input_row_id
+          - name: user_id
+          - name: anonymous_id
+          - name: context_session_id
+          - name: context_campaign_name
+          - name: context_campaign_source
+          - name: context_campaign_medium
+          - name: timestamp
+          - name: user_main_id 
   - name: rudder_user_base_features
     model_type: feature_table_model
     model_spec:
       validity_time: 24h # 1 day
       entity_key: user
-      macros:
-        - name: macro_datediff
-          inputs:
-            - column
-          value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) {% else %} datediff(day, date({{column}}::timestamp), GETDATE()) {% endif %}"
-        - name: macro_datediff_n
-          inputs:
-            - column
-            - number_of_days
-          value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
             name: max_timestamp_bw_tracks_pages
-            select: max(timestamp)
+            select:  max({{rsTracksUnionPages.Var("timestamp")}})
             from: models/rsTracksUnionPages
         #days since last seen
         - entity_var:
             name: days_since_last_seen
-            select: "{{macro_datediff('max_timestamp_bw_tracks_pages')}}"
-            dependencies:
-              - max_timestamp_bw_tracks_pages
+            select: "{{macro_datediff('{{user.Var(\"max_timestamp_bw_tracks_pages\")}}')}}"
         #Churn features
         - entity_var:
             name: is_churned_7_days
-            select: case when days_since_last_seen > 7 then 1 else 0 end
+            select: case when {{user.Var("days_since_last_seen")}} > 7 then 1 else 0 end
             description: Depending on the n value, it specifies if there is any activity observed in the last 7 days.
             dependencies:
-              - days_since_last_seen
+              - session_end_time
         - entity_var:
             name: days_since_account_creation
-            select: "{{macro_datediff('min(timestamp)')}}"
+            select: "{{macro_datediff('min({{rsIdentifies.Var(\"timestamp\")}})')}}"
             from: inputs/rsIdentifies
         - entity_var:
             name: state
             from: inputs/rsIdentifies
-            select: first_value(state)
+            select: first_value({{rsIdentifies.Var("state")}})
             window:
               order_by:
-                - timestamp desc
-            where: state is not null and state!=''
+                - "{{rsIdentifies.Var('timestamp')}} desc"
+            where: "{{rsIdentifies.Var('state')}} is not null and {{rsIdentifies.Var('state')}}!=''"
         - entity_var:
             name: country
             from: inputs/rsIdentifies
-            select: first_value(address_country)
+            select: first_value({{rsIdentifies.Var('address_country')}})
             window:
               order_by:
-                - timestamp desc
-            where: address_country is not null and address_country!=''
+                - "{{rsIdentifies.Var('timestamp')}} desc"
+            where: "{{rsIdentifies.Var('address_country')}} is not null and {{rsIdentifies.Var('address_country')}}!=''"
         - entity_var:
             name: first_name
             from: inputs/rsIdentifies
-            select: first_value(first_name)
+            select: first_value({{rsIdentifies.Var('first_name')}})
             window:
               order_by:
-                - timestamp desc
-            where: first_name is not null and first_name!=''
+                - "{{rsIdentifies.Var('timestamp')}} desc"
+            where: "{{rsIdentifies.Var('first_name')}} is not null and {{rsIdentifies.Var('first_name')}}!=''"
         - entity_var:
             name: last_name
             from: inputs/rsIdentifies
-            select: first_value(last_name)
+            select: first_value({{rsIdentifies.Var('last_name')}})
             window:
               order_by:
-                - timestamp desc
-            where: last_name is not null and last_name!=''
+                - "{{rsIdentifies.Var('timestamp')}} desc"
+            where: "{{rsIdentifies.Var('last_name')}} is not null and {{rsIdentifies.Var('last_name')}}!=''"
         - entity_var:
             name: currency
             from: inputs/rsIdentifies
-            select: first_value(currency)
+            select: first_value({{rsIdentifies.Var('currency')}})
             window:
               order_by:
-                - timestamp desc
-            where: currency is not null and currency!=''
+                - "{{rsIdentifies.Var('timestamp')}} desc"
+            where: "{{rsIdentifies.Var('currency')}} is not null and {{rsIdentifies.Var('currency')}}!=''"
+            dependencies:
+              - session_start_time
         - entity_var:
             name: campaign_sources
-            select: array_agg( context_campaign_source )
+            select: array_agg({{rsIdentifies.Var('context_campaign_source')}})
             from: inputs/rsIdentifies
         - entity_var:
             name: active_days_in_past_7_days
-            select: count(distinct date(timestamp))
+            select: count(distinct date({{rsTracksUnionPages.Var("timestamp")}}))
             from: models/rsTracksUnionPages
-            where: "{{macro_datediff_n('timestamp','7')}}"
+            where: "{{macro_datediff_n('{{rsTracksUnionPages.Var(\"timestamp\")}}','7')}}"
             description: Out of 7 days, how many days have recorded an event till date including today
+            dependencies:
+              - session_start_time
         - entity_var:
             name: active_days_in_past_365_days
-            select: count(distinct date(timestamp))
+            select: count(distinct date({{rsTracksUnionPages.Var('timestamp')}}))
             from: models/rsTracksUnionPages
-            where: "{{macro_datediff_n('timestamp','365')}}"
+            where: "{{macro_datediff_n('{{rsTracksUnionPages.Var(\"timestamp\")}}','365')}}"
             description: Out of 365 days, how many days have recorded an event till date including today
         - input_var:
             name: session_start_time
             from: models/rsTracksUnionPages
-            select: min(timestamp)
+            select: min({{rsTracksUnionPages.Var('timestamp')}})
             window:
               partition_by:
-                - context_session_id
-                - rudder_id
+                - "{{rsTracksUnionPages.Var('context_session_id')}}"
+                - "{{rsTracksUnionPages.Var('rudder_id')}}"
             description: Describes the start time of session of a specific context_id
         - input_var:
             name: session_end_time
             from: models/rsTracksUnionPages
-            select: max(timestamp)
+            select: max({{rsTracksUnionPages.Var('timestamp')}})
             window:
               partition_by:
-                - context_session_id
-                - rudder_id
+                - "{{rsTracksUnionPages.Var('context_session_id')}}"
+                - "{{rsTracksUnionPages.Var('rudder_id')}}"
             description: Describes the end time of session of a specific context_id
         - input_var:
             name: session_row_number
@@ -126,114 +153,136 @@ models:
             select: row_number()
             window:
               partition_by:
-                - context_session_id
-                - rudder_id
+                - "{{rsTracksUnionPages.Var('context_session_id')}}"
+                - "{{rsTracksUnionPages.Var('rudder_id')}}"
               order_by:
-                - timestamp desc
+                - "{{rsTracksUnionPages.Var('timestamp')}} desc"
             description: A row number for all the events within a single session. This is used to compute some of the session based features/
         - entity_var:
             name: total_sessions_till_date
             from: models/rsTracksUnionPages
-            select: count(distinct context_session_id)
-            where: context_session_id is not null
+            select: count(distinct {{rsTracksUnionPages.Var('context_session_id')}})
+            where: "{{rsTracksUnionPages.Var('context_session_id')}} is not null"
             description: Total individual sessions created till date.
         - entity_var:
             name: total_sessions_last_week
             from: models/rsTracksUnionPages
-            select: count(distinct context_session_id)
-            where: " context_session_id is not null and {{macro_datediff('session_start_time')}} between 0 and 7"
+            select: count(distinct {{rsTracksUnionPages.Var('context_session_id')}})
+            where: " {{rsTracksUnionPages.Var('context_session_id')}} is not null and {{macro_datediff('{{rsTracksUnionPages.Var(\"session_start_time\")}}')}} between 0 and 7"
             description: total number of sessions over last 7 days.
+            dependencies:
+              - session_row_number
         - entity_var:
             name: total_sessions_90_days
             from: models/rsTracksUnionPages
-            select: count(distinct context_session_id)
-            where: " context_session_id is not null and {{macro_datediff('session_start_time')}} between 0 and 90"
+            select: count(distinct {{rsTracksUnionPages.Var('context_session_id')}})
+            where: " {{rsTracksUnionPages.Var('context_session_id')}} is not null and {{macro_datediff('{{rsTracksUnionPages.Var(\"session_start_time\")}}')}} between 0 and 90"
             description: total number of sessions over last 90 days.
         - entity_var:
             name: total_sessions_365_days
             from: models/rsTracksUnionPages
-            select: count(distinct context_session_id)
-            where: " context_session_id is not null and {{macro_datediff('session_start_time')}} between 0 and 365 "
+            select: count(distinct {{rsTracksUnionPages.Var('context_session_id')}})
+            where: " {{rsTracksUnionPages.Var('context_session_id')}} is not null and {{macro_datediff('{{rsTracksUnionPages.Var(\"session_start_time\")}}')}} between 0 and 365 "
             description: total number of sessions over last 356 days.
+            dependencies:
+              - session_start_time
         - entity_var:
             name: avg_session_length_in_sec_overall
             from: models/rsTracksUnionPages
-            select: avg(datediff(second, session_start_time, session_end_time))
-            where: session_row_number = 1 and context_session_id is not null
+            select: avg(datediff(second, {{rsTracksUnionPages.Var('session_start_time')}}, {{rsTracksUnionPages.Var('session_end_time')}}))
+            where: "{{user.Var('session_row_number')}} = 1 and {{rsTracksUnionPages.Var('context_session_id')}} is not null"
             description: Average session length (in seconds) of all the user sessions till date.
+            dependencies:
+              - session_row_number
+              - session_start_time
+              - session_end_time
         - entity_var:
             name: avg_session_length_in_sec_last_week
             from: models/rsTracksUnionPages
-            select: avg(datediff(second, session_start_time, session_end_time))
-            where: context_session_id is not null and session_row_number = 1 and {{macro_datediff('session_start_time')}}  between 0 and 7
+            select: avg(datediff(second, {{rsTracksUnionPages.Var('session_start_time')}}, {{rsTracksUnionPages.Var('session_end_time')}}))
+            where: "{{rsTracksUnionPages.Var('context_session_id')}} is not null and {{user.Var('session_row_number')}} = 1 and {{macro_datediff(\"{{rsTracksUnionPages.Var('session_start_time')}}\")}}  between 0 and 7"
             description: Average session length (in seconds) of all the user sessions that started in last 7 days
+            dependencies:
+              - session_start_time
+              - session_end_time
+              - session_row_number
         - entity_var:
             name: avg_session_length_in_sec_365_days
             from: models/rsTracksUnionPages
-            select: avg(datediff(second, session_start_time, session_end_time))
-            where: "context_session_id is not null and session_row_number = 1 and {{macro_datediff_n('session_start_time','365')}}"
+            select: avg(datediff(second, {{rsTracksUnionPages.Var('session_start_time')}}, {{rsTracksUnionPages.Var('session_end_time')}}))
+            where: "{{rsTracksUnionPages.Var('context_session_id')}} is not null and {{user.Var('session_row_number')}} = 1 and {{macro_datediff_n(\"{{rsTracksUnionPages.Var('session_start_time')}}\",'365')}}"
             description: Average session length (in seconds) of all the user sessions that started in last 365 days
+            dependencies:
+              - session_row_number
+              - session_start_time
+              - session_end_time
         - entity_var:
             name: first_seen_date
             from: models/rsTracksUnionPages
-            select: min(date(session_start_time))
+            select: min(date( {{rsTracksUnionPages.Var('session_start_time')}}))
             description: The first date on which an event has been recorded by the user
+            dependencies:
+              - session_start_time
         - entity_var:
             name: last_seen_date
             from: models/rsTracksUnionPages
-            select: max(date(session_end_time))
+            select: max(date( {{rsTracksUnionPages.Var('session_end_time')}}))
             description: The latest date on which an event has been recorded by the user
+            dependencies:
+              - session_end_time
         - entity_var:
             name: first_campaign_name
             from: inputs/rsPages
-            select: first_value(context_campaign_name)
+            select: first_value({{rsPages.Var('context_campaign_name')}})
             window:
               order_by:
-                - timestamp asc
-            where: context_campaign_name is not null and context_campaign_name!=''
+                - "{{rsPages.Var('timestamp')}} asc"
+            where: "{{rsPages.Var('context_campaign_name')}} is not null and {{rsPages.Var('context_campaign_name')}}!=''"
             description: First campaign from which a user has visited the app
         - entity_var:
             name: last_campaign_name
             from: inputs/rsPages
-            select: last_value(context_campaign_name)
+            select: last_value({{rsPages.Var('context_campaign_name')}})
             window:
               order_by:
-                - timestamp asc
-            where: context_campaign_name is not null and context_campaign_name!=''
+                - "{{rsPages.Var('timestamp')}} asc"
+            where: "{{rsPages.Var('context_campaign_name')}} is not null and {{rsPages.Var('context_campaign_name')}}!=''"
             description: Latest campaign from which a user has visited the app
         - entity_var:
             name: first_source_name
             from: inputs/rsPages
-            select: first_value(context_campaign_source)
+            select: first_value({{rsPages.Var('context_campaign_source')}})
             window:
               order_by:
-                - timestamp asc
-            where: context_campaign_source is not null and context_campaign_source!=''
+                - "{{rsPages.Var('timestamp')}} asc"
+            where: "{{rsPages.Var('context_campaign_source')}} is not null and {{rsPages.Var('context_campaign_source')}}!=''"
             description: First source from which a user has visited the app
         - entity_var:
             name: last_source_name
             from: inputs/rsPages
-            select: last_value(context_campaign_source)
+            select: last_value({{rsPages.Var('context_campaign_source')}})
             window:
               order_by:
-                - timestamp asc
-            where: context_campaign_source is not null and context_campaign_source!=''
+                - "{{rsPages.Var('timestamp')}} asc"
+            where: "{{rsPages.Var('context_campaign_source')}} is not null and {{rsPages.Var('context_campaign_source')}}!=''"
             description: Last source from which a user has visited the app
         - entity_var:
             name: campaigns_list
-            from: inputs/rsPages
-            select: array_agg( context_campaign_name) WITHIN GROUP (ORDER BY timestamp asc)
+            from: models/pages_orderby_table
+            select: array_agg( {{pages_orderby_table.Var('context_campaign_name')}})
             description: list of all campaigns from which a user has visited the app, sorted in chronological order, from oldest to newest
         - entity_var:
             name: mediums_list
-            from: inputs/rsPages
-            select: array_agg( context_campaign_medium) WITHIN GROUP (ORDER BY timestamp asc)
+            from: models/pages_orderby_table
+            select: array_agg( {{pages_orderby_table.Var('context_campaign_medium')}})
             description: list of all mediums from which a user has visited the app, sorted in chronological order, from oldest to newest
         - entity_var:
             name: sources_list
-            from: inputs/rsPages
-            select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
+            from: models/pages_orderby_table
+            select: array_agg( {{pages_orderby_table.Var('context_campaign_source')}})
             description: list of all sources from which a user has visited the app, sorted in chronological order, from oldest to newest
+            dependencies:
+              - session_start_time
       features:
         - days_since_last_seen
         - days_since_account_creation
