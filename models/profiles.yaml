@@ -79,6 +79,20 @@ models:
               - days_since_last_seen
               - session_end_time
         - entity_var:
+            name: is_churned_30_days
+            select: case when days_since_last_seen > 30 then 1 else 0 end
+            description: Depending on the n value, it specifies if there is any activity observed in the last 30 days.
+            dependencies:
+              - days_since_last_seen
+              - session_end_time
+        - entity_var:
+            name: is_churned_90_days
+            select: case when days_since_last_seen > 90 then 1 else 0 end
+            description: Depending on the n value, it specifies if there is any activity observed in the last 90 days.
+            dependencies:
+              - days_since_last_seen
+              - session_end_time
+        - entity_var:
             name: days_since_account_creation
             select: "{{macro_datediff('min(timestamp)')}}"
             from: inputs/rsIdentifies
@@ -317,6 +331,8 @@ models:
         - first_seen_date
         - last_seen_date
         - is_churned_7_days
+        - is_churned_30_days
+        - is_churned_90_days
         - first_campaign_name
         - last_campaign_name
         - first_source_name
@@ -324,3 +340,4 @@ models:
         - campaigns_list
         - mediums_list
         - sources_list
+  
