@@ -6,7 +6,7 @@ models:
       occurred_at_col: insert_ts
       entity_key: user
       validity_time: 24h # 1 day
-      py_repo_url: /Users/admin/Desktop/Playground/rudderstack_profiles_classifier
+      py_repo_url: git@github.com:rudderlabs/rudderstack-profiles-classifier.git
 
       train:
         file_extension: .json
@@ -21,7 +21,7 @@ models:
             prediction_horizon_days: 7 # Number of days in future for which we want to predict
             features_profiles_model: 'rudder_user_base_features' # Model name
             output_profiles_ml_model: *model_name_7_days # Name of output model based on current model to dinstinguish between multiple models
-            eligible_users: user_main_id is not null
+            eligible_users: 
             inputs: *inputs_7_days
 
           
@@ -54,7 +54,7 @@ models:
       occurred_at_col: insert_ts
       entity_key: user
       validity_time: 24h # 1 day
-      py_repo_url: /Users/admin/Desktop/Playground/rudderstack_profiles_classifier
+      py_repo_url: git@github.com:rudderlabs/rudderstack-profiles-classifier.git
 
       train:
         file_extension: .json
@@ -69,7 +69,7 @@ models:
             prediction_horizon_days: 30 # Number of days in future for which we want to predict
             features_profiles_model: 'rudder_user_base_features' # Model name
             output_profiles_ml_model: *model_name_30_days # Name of output model based on current model to dinstinguish between multiple models
-            eligible_users: user_main_id is not null
+            eligible_users: 
             inputs: *inputs_30_days
 
           
@@ -102,7 +102,7 @@ models:
       occurred_at_col: insert_ts
       entity_key: user
       validity_time: 24h # 1 day
-      py_repo_url: /Users/admin/Desktop/Playground/rudderstack_profiles_classifier
+      py_repo_url: git@github.com:rudderlabs/rudderstack-profiles-classifier.git
 
       train:
         file_extension: .json
@@ -117,7 +117,7 @@ models:
             prediction_horizon_days: 90 # Number of days in future for which we want to predict
             features_profiles_model: 'rudder_user_base_features' # Model name
             output_profiles_ml_model: *model_name_90_days # Name of output model based on current model to dinstinguish between multiple models
-            eligible_users: user_main_id is not null
+            eligible_users: 
             inputs: *inputs_90_days
 
           
