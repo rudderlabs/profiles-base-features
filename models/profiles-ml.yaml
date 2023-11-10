@@ -7,7 +7,6 @@ models:
       entity_key: user
       validity_time: 24h # 1 day
       py_repo_url: git@github.com:rudderlabs/rudderstack-profiles-classifier.git
-
       train:
         file_extension: .json
         file_validity: 168h # If the last trained model is older than this, then the model will be trained again,
@@ -21,16 +20,13 @@ models:
             prediction_horizon_days: 7 # Number of days in future for which we want to predict
             features_profiles_model: 'rudder_user_base_features' # Model name
             output_profiles_ml_model: *model_name_7_days # Name of output model based on current model to dinstinguish between multiple models
-            eligible_users: 
+            eligible_users:
             inputs: *inputs_7_days
-
-          
           preprocessing: &model_prep_configs_7_days
             ignore_features:
               - user_email
               - first_name
               - last_name
-
       predict:
         inputs:
           - models/rudder_user_base_features
@@ -45,9 +41,7 @@ models:
               features:
                 - name: *percentile_name_7_days
                   description: 'Percentile of churn score. Higher the percentile, higher the probability of churn'
-
-      <<: *feature_meta_data_7_days
-
+      !!merge <<: *feature_meta_data_7_days
   - name: &model_name_30_days churn_30_days_model
     model_type: python_model
     model_spec:
@@ -55,7 +49,6 @@ models:
       entity_key: user
       validity_time: 24h # 1 day
       py_repo_url: git@github.com:rudderlabs/rudderstack-profiles-classifier.git
-
       train:
         file_extension: .json
         file_validity: 168h # If the last trained model is older than this, then the model will be trained again,
@@ -69,16 +62,13 @@ models:
             prediction_horizon_days: 30 # Number of days in future for which we want to predict
             features_profiles_model: 'rudder_user_base_features' # Model name
             output_profiles_ml_model: *model_name_30_days # Name of output model based on current model to dinstinguish between multiple models
-            eligible_users: 
+            eligible_users:
             inputs: *inputs_30_days
-
-          
           preprocessing: &model_prep_configs_30_days
             ignore_features:
               - user_email
               - first_name
               - last_name
-
       predict:
         inputs:
           - models/rudder_user_base_features
@@ -93,9 +83,7 @@ models:
               features:
                 - name: *percentile_name_30_days
                   description: 'Percentile of churn score. Higher the percentile, higher the probability of churn'
-
-      <<: *feature_meta_data_30_days
-
+      !!merge <<: *feature_meta_data_30_days
   - name: &model_name_90_days churn_90_days_model
     model_type: python_model
     model_spec:
@@ -103,7 +91,6 @@ models:
       entity_key: user
       validity_time: 24h # 1 day
       py_repo_url: git@github.com:rudderlabs/rudderstack-profiles-classifier.git
-
       train:
         file_extension: .json
         file_validity: 168h # If the last trained model is older than this, then the model will be trained again,
@@ -117,16 +104,13 @@ models:
             prediction_horizon_days: 90 # Number of days in future for which we want to predict
             features_profiles_model: 'rudder_user_base_features' # Model name
             output_profiles_ml_model: *model_name_90_days # Name of output model based on current model to dinstinguish between multiple models
-            eligible_users: 
+            eligible_users:
             inputs: *inputs_90_days
-
-          
           preprocessing: &model_prep_configs_90_days
             ignore_features:
               - user_email
               - first_name
               - last_name
-
       predict:
         inputs:
           - models/rudder_user_base_features
@@ -141,5 +125,4 @@ models:
               features:
                 - name: *percentile_name_90_days
                   description: 'Percentile of churn score. Higher the percentile, higher the probability of churn'
-
-      <<: *feature_meta_data_90_days
+      !!merge <<: *feature_meta_data_90_days
