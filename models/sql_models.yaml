@@ -22,11 +22,9 @@ models:
         - select: "user_id"
           type: user_id
           entity: user
-          to_default_stitcher: true
         - select: "anonymous_id"
           type: anonymous_id
           entity: user
-          to_default_stitcher: true
       contract:
         is_optional: false
         is_event_stream: false
