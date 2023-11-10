@@ -43,22 +43,12 @@ models:
           - name: context_campaign_source
           - name: context_campaign_medium
           - name: timestamp
-          - name: user_main_id 
+          - name: user_main_id
   - name: rudder_user_base_features
     model_type: feature_table_model
     model_spec:
       validity_time: 24h # 1 day
       entity_key: user
-      macros:
-        - name: macro_datediff
-          inputs:
-            - column
-          value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) {% else %} datediff(day, date({{column}}::timestamp), GETDATE()) {% endif %}"
-        - name: macro_datediff_n
-          inputs:
-            - column
-            - number_of_days
-          value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
             name: max_timestamp_bw_tracks_pages
@@ -67,27 +57,27 @@ models:
         #days since last seen
         - entity_var:
             name: days_since_last_seen
-            select: "{{macro_datediff('max_timestamp_bw_tracks_pages')}}"
+            select: "{{macro_datediff('{{user.Var(\"max_timestamp_bw_tracks_pages\")}}')}}"
             dependencies:
               - max_timestamp_bw_tracks_pages
         #Churn features
         - entity_var:
             name: is_churned_7_days
-            select: case when days_since_last_seen > 7 then 1 else 0 end
+            select: case when {{user.Var("days_since_last_seen")}} > 7 then 1 else 0 end
             description: Depending on the n value, it specifies if there is any activity observed in the last 7 days.
             dependencies:
               - days_since_last_seen
               - session_end_time
         - entity_var:
             name: is_churned_30_days
-            select: case when days_since_last_seen > 30 then 1 else 0 end
+            select: case when {{user.Var("days_since_last_seen")}} > 30 then 1 else 0 end
             description: Depending on the n value, it specifies if there is any activity observed in the last 30 days.
             dependencies:
               - days_since_last_seen
               - session_end_time
         - entity_var:
             name: is_churned_90_days
-            select: case when days_since_last_seen > 90 then 1 else 0 end
+            select: case when {{user.Var("days_since_last_seen")}} > 90 then 1 else 0 end
             description: Depending on the n value, it specifies if there is any activity observed in the last 90 days.
             dependencies:
               - days_since_last_seen
@@ -195,7 +185,7 @@ models:
             name: total_sessions_last_week
             from: models/rsTracksUnionPages
             select: count(distinct context_session_id)
-            where: " context_session_id is not null and {{macro_datediff('session_start_time')}} between 0 and 7"
+            where: " context_session_id is not null and {{macro_datediff('{{rsTracksUnionPages.Var(\"session_start_time\")}}')}} between 0 and 7"
             description: total number of sessions over last 7 days.
             dependencies:
               - session_row_number
@@ -203,21 +193,21 @@ models:
             name: total_sessions_90_days
             from: models/rsTracksUnionPages
             select: count(distinct context_session_id)
-            where: " context_session_id is not null and {{macro_datediff('session_start_time')}} between 0 and 90"
+            where: " context_session_id is not null and {{macro_datediff('{{rsTracksUnionPages.Var(\"session_start_time\")}}')}} between 0 and 90"
             description: total number of sessions over last 90 days.
         - entity_var:
             name: total_sessions_365_days
             from: models/rsTracksUnionPages
             select: count(distinct context_session_id)
-            where: " context_session_id is not null and {{macro_datediff('session_start_time')}} between 0 and 365 "
+            where: " context_session_id is not null and {{macro_datediff('{{rsTracksUnionPages.Var(\"session_start_time\")}}')}} between 0 and 365 "
             description: total number of sessions over last 356 days.
             dependencies:
               - session_start_time
         - entity_var:
             name: avg_session_length_in_sec_overall
             from: models/rsTracksUnionPages
-            select: avg(datediff(second, session_start_time, session_end_time))
-            where: session_row_number = 1 and context_session_id is not null
+            select: avg(datediff(second, {{rsTracksUnionPages.Var("session_start_time")}}, {{rsTracksUnionPages.Var("session_end_time")}}))
+            where: '{{rsTracksUnionPages.Var("session_row_number")}} = 1 and context_session_id is not null'
             description: Average session length (in seconds) of all the user sessions till date.
             dependencies:
               - session_row_number
@@ -226,8 +216,8 @@ models:
         - entity_var:
             name: avg_session_length_in_sec_last_week
             from: models/rsTracksUnionPages
-            select: avg(datediff(second, session_start_time, session_end_time))
-            where: context_session_id is not null and session_row_number = 1 and {{macro_datediff('session_start_time')}}  between 0 and 7
+            select: avg(datediff(second, {{rsTracksUnionPages.Var("session_start_time")}}, {{rsTracksUnionPages.Var("session_end_time")}}))
+            where: context_session_id is not null and {{rsTracksUnionPages.Var("session_row_number")}} = 1 and {{macro_datediff('{{rsTracksUnionPages.Var("session_start_time")}}')}}  between 0 and 7
             description: Average session length (in seconds) of all the user sessions that started in last 7 days
             dependencies:
               - session_start_time
@@ -236,8 +226,8 @@ models:
         - entity_var:
             name: avg_session_length_in_sec_365_days
             from: models/rsTracksUnionPages
-            select: avg(datediff(second, session_start_time, session_end_time))
-            where: "context_session_id is not null and session_row_number = 1 and {{macro_datediff_n('session_start_time','365')}}"
+            select: avg(datediff(second, {{rsTracksUnionPages.Var("session_start_time")}}, {{rsTracksUnionPages.Var("session_end_time")}}))
+            where: "context_session_id is not null and {{rsTracksUnionPages.Var(\"session_row_number\")}} = 1 and {{macro_datediff_n('{{rsTracksUnionPages.Var(\"session_start_time\")}}','365')}}"
             description: Average session length (in seconds) of all the user sessions that started in last 365 days
             dependencies:
               - session_row_number
@@ -246,14 +236,14 @@ models:
         - entity_var:
             name: first_seen_date
             from: models/rsTracksUnionPages
-            select: min(date(session_start_time))
+            select: min(date({{rsTracksUnionPages.Var("session_start_time")}}))
             description: The first date on which an event has been recorded by the user
             dependencies:
               - session_start_time
         - entity_var:
             name: last_seen_date
             from: models/rsTracksUnionPages
-            select: max(date(session_end_time))
+            select: max(date({{rsTracksUnionPages.Var("session_end_time")}}))
             description: The latest date on which an event has been recorded by the user
             dependencies:
               - session_end_time
@@ -340,4 +330,3 @@ models:
         - campaigns_list
         - mediums_list
         - sources_list
-  
