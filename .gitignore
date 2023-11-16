@@ -1,2 +1,4 @@
 output
 logs
+**/build/
+**/*.egg-info/

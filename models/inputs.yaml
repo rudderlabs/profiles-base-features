@@ -20,15 +20,12 @@ inputs:
         - select: "user_id"
           type: user_id
           entity: user
-          to_default_stitcher: true
         - select: "anonymous_id"
           type: anonymous_id
           entity: user
-          to_default_stitcher: true
         - select: "lower(email)"
           type: email
           entity: user
-          to_default_stitcher: true
   - name: rsIdentifies_2
     source_metadata:
       role: "*"
@@ -50,15 +47,12 @@ inputs:
         - select: "user_id"
           type: user_id
           entity: user
-          to_default_stitcher: true
         - select: "anonymous_id"
           type: anonymous_id
           entity: user
-          to_default_stitcher: true
         - select: "lower(email)"
           type: email
           entity: user
-          to_default_stitcher: true
   - name: rsIdentifies_3
     source_metadata:
       role: "*"
@@ -80,15 +74,12 @@ inputs:
         - select: "user_id"
           type: user_id
           entity: user
-          to_default_stitcher: true
         - select: "anonymous_id"
           type: anonymous_id
           entity: user
-          to_default_stitcher: true
         - select: "lower(email)"
           type: email
           entity: user
-          to_default_stitcher: true
   - name: rsTracks_1
     source_metadata:
       role: "*"
@@ -109,11 +100,9 @@ inputs:
         - select: "user_id"
           type: user_id
           entity: user
-          to_default_stitcher: true
         - select: "anonymous_id"
           type: anonymous_id
           entity: user
-          to_default_stitcher: true
   - name: rsTracks_2
     source_metadata:
       role: "*"
@@ -134,11 +123,9 @@ inputs:
         - select: "user_id"
           type: user_id
           entity: user
-          to_default_stitcher: true
         - select: "anonymous_id"
           type: anonymous_id
           entity: user
-          to_default_stitcher: true
   - name: rsTracks_3
     source_metadata:
       role: "*"
@@ -159,11 +146,9 @@ inputs:
         - select: "user_id"
           type: user_id
           entity: user
-          to_default_stitcher: true
         - select: "anonymous_id"
           type: anonymous_id
           entity: user
-          to_default_stitcher: true
   - name: rsPages_1
     source_metadata:
       role: "*"
@@ -184,11 +169,9 @@ inputs:
         - select: "user_id"
           type: user_id
           entity: user
-          to_default_stitcher: true
         - select: "anonymous_id"
           type: anonymous_id
           entity: user
-          to_default_stitcher: true
   - name: rsPages_2
     source_metadata:
       role: "*"
@@ -209,11 +192,9 @@ inputs:
         - select: "user_id"
           type: user_id
           entity: user
-          to_default_stitcher: true
         - select: "anonymous_id"
           type: anonymous_id
           entity: user
-          to_default_stitcher: true
   - name: rsPages_3
     source_metadata:
       role: "*"
@@ -234,8 +215,6 @@ inputs:
         - select: "user_id"
           type: user_id
           entity: user
-          to_default_stitcher: true
         - select: "anonymous_id"
           type: anonymous_id
           entity: user
-          to_default_stitcher: true

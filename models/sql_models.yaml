@@ -22,11 +22,64 @@ models:
         - select: "user_id"
           type: user_id
           entity: user
-          to_default_stitcher: true
         - select: "anonymous_id"
           type: anonymous_id
           entity: user
-          to_default_stitcher: true
+      contract:
+        is_optional: false
+        is_event_stream: false
+        with_entity_ids:
+          - user
+        with_columns:
+          - name: user_id
+          - name: anonymous_id
+  - name: rsPagesFinal
+    model_type: sql_template
+    model_spec:
+      validity_time: 24h # 1 day
+      materialization:
+        output_type: ephemeral
+        run_type: discrete
+      single_sql: |
+        {% with Pages = this.DeRef("models/rsPages") %}
+            select * from {{Pages}}
+        {% endwith %}
+      ids:
+        - select: user_id
+          type: user_id
+          entity: user
+        - select: anonymous_id
+          type: anonymous_id
+          entity: user
+      contract:
+        is_optional: false
+        is_event_stream: false
+        with_entity_ids:
+          - user
+        with_columns:
+          - name: user_id
+          - name: anonymous_id
+  - name: rsIdentifiesFinal
+    model_type: sql_template
+    model_spec:
+      validity_time: 24h # 1 day
+      materialization:
+        output_type: ephemeral
+        run_type: discrete
+      single_sql: |
+        {% with Identifies = this.DeRef("models/rsIdentifies") %}
+            select * from {{Identifies}}
+        {% endwith %}
+      ids:
+        - select: user_id
+          type: user_id
+          entity: user
+        - select: anonymous_id
+          type: anonymous_id
+          entity: user
+        - select: lower(email)
+          type: email
+          entity: user
       contract:
         is_optional: false
         is_event_stream: false
