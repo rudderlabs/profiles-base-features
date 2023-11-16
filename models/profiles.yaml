@@ -235,35 +235,40 @@ models:
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: list of all sources from which a user has visited the app, sorted in chronological order, from oldest to newest
         - entity_var:
-            name: loan_subject
+            name: lastPointofContact
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: what is the purpose of the loan
+            description: Who spoke with the target last
         - entity_var:
             name: content_count
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: how many knowledge content did they consume
         - entity_var:
-            name: total_payment_count
+            name: recommendedContact
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: how many payments have been made
+            description: who should reach out next
         - entity_var:
-            name: total_interest
+            name: netWorth
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: accumulated interest paid
+            description: accumulated wealth
         - entity_var:
             name: interest_rate
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: current loan interest rate
         - entity_var:
-            name: lender
+            name: investorType
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: current lender
+            description: commercial, institutional, HNW
+        - entity_var:
+            name: company
+            from: inputs/rsPages
+            select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
+            description: commercial, institutional, HNW
         - entity_var:
             name: last_session_date
             from: inputs/rsPages
@@ -297,10 +302,11 @@ models:
         - campaigns_list
         - mediums_list
         - sources_list
-        - loan_subject
+        - lastPointofContact
         - content_count
-        - total_payment_count
-        - total_interest
+        - recommendedContact
+        - netWorth
         - interest_rate
-        - lender
+        - investorType
+        - company
         - last_session_date
