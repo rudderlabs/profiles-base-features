@@ -12,7 +12,7 @@ models:
         file_extension: .json
         file_validity: 168h # If the last trained model is older than this, then the model will be trained again,
         inputs: &inputs_7_days
-          - packages/base_features/models/rudder_user_base_features # inputs to materialise the required data for model
+          - models/rudder_user_base_features # inputs to materialise the required data for model
         config:
           data: &model_data_configs_7_days
             label_column: is_churned_7_days # Name of column for which we want to find predictions
@@ -22,7 +22,8 @@ models:
             features_profiles_model: 'rudder_user_base_features' # Model name
             output_profiles_ml_model: *model_name_7_days # Name of output model based on current model to dinstinguish between multiple models
             eligible_users:
-            inputs: *inputs_7_days
+            inputs:
+              - packages/base_features/models/rudder_user_base_features
 
           
           preprocessing: &model_prep_configs_7_days
@@ -33,7 +34,7 @@ models:
 
       predict:
         inputs:
-          - packages/base_features/models/rudder_user_base_features
+          - models/rudder_user_base_features
         config:
           data: *model_data_configs_7_days # Use the same config as training
           preprocessing: *model_prep_configs_7_days # Use the same config as training
@@ -60,7 +61,7 @@ models:
         file_extension: .json
         file_validity: 168h # If the last trained model is older than this, then the model will be trained again,
         inputs: &inputs_30_days
-          - packages/base_features/models/rudder_user_base_features # inputs to materialise the required data for model
+          - models/rudder_user_base_features # inputs to materialise the required data for model
         config:
           data: &model_data_configs_30_days
             label_column: is_churned_30_days # Name of column for which we want to find predictions
@@ -70,7 +71,8 @@ models:
             features_profiles_model: 'rudder_user_base_features' # Model name
             output_profiles_ml_model: *model_name_30_days # Name of output model based on current model to dinstinguish between multiple models
             eligible_users: 
-            inputs: *inputs_30_days
+            inputs:
+              - packages/base_features/models/rudder_user_base_features
 
           
           preprocessing: &model_prep_configs_30_days
@@ -81,7 +83,7 @@ models:
 
       predict:
         inputs:
-          - packages/base_features/models/rudder_user_base_features
+          - models/rudder_user_base_features
         config:
           data: *model_data_configs_30_days # Use the same config as training
           preprocessing: *model_prep_configs_30_days # Use the same config as training
@@ -108,7 +110,7 @@ models:
         file_extension: .json
         file_validity: 168h # If the last trained model is older than this, then the model will be trained again,
         inputs: &inputs_90_days
-          - packages/base_features/models/rudder_user_base_features # inputs to materialise the required data for model
+          - models/rudder_user_base_features # inputs to materialise the required data for model
         config:
           data: &model_data_configs_90_days
             label_column: is_churned_90_days # Name of column for which we want to find predictions
@@ -118,7 +120,8 @@ models:
             features_profiles_model: 'rudder_user_base_features' # Model name
             output_profiles_ml_model: *model_name_90_days # Name of output model based on current model to dinstinguish between multiple models
             eligible_users:
-            inputs: *inputs_90_days
+            inputs:
+              - packages/base_features/models/rudder_user_base_features
 
           
           preprocessing: &model_prep_configs_90_days
@@ -128,7 +131,7 @@ models:
               - last_name
       predict:
         inputs:
-          - packages/base_features/models/rudder_user_base_features
+          - models/rudder_user_base_features
         config:
           data: *model_data_configs_90_days # Use the same config as training
           preprocessing: *model_prep_configs_90_days # Use the same config as training
