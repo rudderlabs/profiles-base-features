@@ -235,45 +235,50 @@ models:
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: list of all sources from which a user has visited the app, sorted in chronological order, from oldest to newest
         - entity_var:
-            name: lastPointofContact
+            name: FamilyCount
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Who spoke with the target last
+            description: Total members of family
         - entity_var:
             name: content_count
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: how many knowledge content did they consume
         - entity_var:
-            name: recommendedContact
+            name: PrimaryChildAge
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: who should reach out next
+            description: Age of first child
         - entity_var:
-            name: netWorth
+            name: SecondaryChildAge
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: accumulated wealth
+            description: Age of Second child
         - entity_var:
-            name: interest_rate
+            name: PurchaseHistory
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: current loan interest rate
+            description: What products household has purchased
         - entity_var:
-            name: investorType
+            name: SubscriptionStatus
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: commercial, institutional, HNW
+            description: Current/Lapsed/Trial status
         - entity_var:
-            name: company
+            name: SleepCount
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: commercial, institutional, HNW
+            description: How many sleep events have been triggered
         - entity_var:
-            name: last_session_date
+            name: PumpCount
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: last session with a banker
+            description: How many Pump events have been triggered
+        - entity_var:
+            name: FeedingCount
+            from: inputs/rsPages
+            select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
+            description: How many Feeding events have been triggered
       features:
         - days_since_last_seen
         - days_since_account_creation
@@ -302,11 +307,12 @@ models:
         - campaigns_list
         - mediums_list
         - sources_list
-        - lastPointofContact
+        - FamilyCount
         - content_count
-        - recommendedContact
-        - netWorth
-        - interest_rate
-        - investorType
-        - company
-        - last_session_date
+        - PrimaryChildAge
+        - SecondaryChildAge
+        - PurchaseHistory
+        - SubscriptionStatus
+        - SleepCount
+        - PumpCount
+        - FeedingCount
