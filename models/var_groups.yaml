@@ -288,3 +288,31 @@ var_groups:
             - session_start_time
           tags:
             - Attribution
+      #Churn features
+      - entity_var:
+          name: is_churned_7_days
+          select: case when {{user.Var("days_since_last_seen")}} > 7 then 1 else 0 end
+          description: Depending on the n value, it specifies if there is any activity observed in the last 7 days.
+          dependencies:
+            - days_since_last_seen
+            - session_end_time
+          tags:
+            - Predictive ML Features
+      - entity_var:
+          name: is_churned_30_days
+          select: case when {{user.Var("days_since_last_seen")}} > 30 then 1 else 0 end
+          description: Depending on the n value, it specifies if there is any activity observed in the last 30 days.
+          dependencies:
+            - days_since_last_seen
+            - session_end_time
+          tags:
+            - Predictive ML Features
+      - entity_var:
+          name: is_churned_90_days
+          select: case when {{user.Var("days_since_last_seen")}} > 90 then 1 else 0 end
+          description: Depending on the n value, it specifies if there is any activity observed in the last 90 days.
+          dependencies:
+            - days_since_last_seen
+            - session_end_time
+          tags:
+            - Predictive ML Features
