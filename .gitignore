@@ -2,3 +2,4 @@ output
 logs
 **/build/
 **/*.egg-info/
+migrations
