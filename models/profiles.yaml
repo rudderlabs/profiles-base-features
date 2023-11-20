@@ -52,3 +52,39 @@ models:
           - name: context_campaign_source
           - name: context_campaign_medium
           - name: timestamp
+
+  - name: rudder_user_base_features
+    model_type: feature_table_model
+    model_spec:
+      validity_time: 24h # 1 day
+      entity_key: user
+      features:
+        - days_since_last_seen
+        - days_since_account_creation
+        - state
+        - country
+        - first_name
+        - last_name
+        - currency
+        - campaign_sources
+        - active_days_in_past_7_days
+        - active_days_in_past_365_days
+        - total_sessions_till_date
+        - total_sessions_last_week
+        - total_sessions_90_days
+        - total_sessions_365_days
+        - avg_session_length_in_sec_overall
+        - avg_session_length_in_sec_last_week
+        - avg_session_length_in_sec_365_days
+        - first_seen_date
+        - last_seen_date
+        - is_churned_7_days
+        - is_churned_30_days
+        - is_churned_90_days
+        - first_campaign_name
+        - last_campaign_name
+        - first_source_name
+        - last_source_name
+        - campaigns_list
+        - mediums_list
+        - sources_list
