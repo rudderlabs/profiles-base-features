@@ -14,13 +14,6 @@ var_groups:
           tags:
             - Engagement
       - entity_var:
-          name: is_churned_7_days
-          select: case when {{user.Var("days_since_last_seen")}} > 7 then 1 else 0 end
-          description: Depending on the n value, it specifies if there is any activity observed in the last 7 days.
-          dependencies:
-            - days_since_last_seen
-            - session_end_time
-      - entity_var:
           name: days_since_account_creation
           select: "{{macro_datediff('min(timestamp)')}}"
           from: models/rsIdentifiesFinal
