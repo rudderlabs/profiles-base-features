@@ -8,9 +8,8 @@ var_groups:
           from: models/rsTracksUnionPages
       - entity_var:
           name: days_since_last_seen
-          select: "{{macro_datediff('{{user.Var(\"max_timestamp_bw_tracks_pages\")}}')}}"
-          dependencies:
-            - max_timestamp_bw_tracks_pages
+          select: "{{macro_datediff('max(timestamp)')}}"
+          from: models/rsTracksUnionPages
           tags:
             - Engagement
       - entity_var:
@@ -67,8 +66,6 @@ var_groups:
             order_by:
               - timestamp desc
           where: currency is not null and currency!=''
-          dependencies:
-            - session_start_time
           tags:
             - Demographics  
       - entity_var:
@@ -83,8 +80,6 @@ var_groups:
           from: models/rsTracksUnionPages
           where: "{{macro_datediff_n('timestamp','7')}}"
           description: Out of 7 days, how many days have recorded an event till date including today
-          dependencies:
-            - session_start_time
           tags:
             - Engagement
       - entity_var:
@@ -138,8 +133,6 @@ var_groups:
           select: count(distinct context_session_id)
           where: " context_session_id is not null and {{macro_datediff('{{rsTracksUnionPages.Var(\"session_start_time\")}}')}} between 0 and 7"
           description: total number of sessions over last 7 days.
-          dependencies:
-            - session_row_number
           tags:
             - Engagement
       - entity_var:
@@ -156,8 +149,6 @@ var_groups:
           select: count(distinct context_session_id)
           where: " context_session_id is not null and {{macro_datediff('{{rsTracksUnionPages.Var(\"session_start_time\")}}')}} between 0 and 365 "
           description: total number of sessions over last 356 days.
-          dependencies:
-            - session_start_time
           tags:
             - Engagement
       - entity_var:
@@ -166,10 +157,6 @@ var_groups:
           select: avg(datediff(second, {{rsTracksUnionPages.Var("session_start_time")}}, {{rsTracksUnionPages.Var("session_end_time")}}))
           where: '{{rsTracksUnionPages.Var("session_row_number")}} = 1 and context_session_id is not null'
           description: Average session length (in seconds) of all the user sessions till date.
-          dependencies:
-            - session_row_number
-            - session_start_time
-            - session_end_time
           tags:
             - Engagement
       - entity_var:
@@ -178,10 +165,6 @@ var_groups:
           select: avg(datediff(second, {{rsTracksUnionPages.Var("session_start_time")}}, {{rsTracksUnionPages.Var("session_end_time")}}))
           where: context_session_id is not null and {{rsTracksUnionPages.Var("session_row_number")}} = 1 and {{macro_datediff('{{rsTracksUnionPages.Var("session_start_time")}}')}}  between 0 and 7
           description: Average session length (in seconds) of all the user sessions that started in last 7 days
-          dependencies:
-            - session_start_time
-            - session_end_time
-            - session_row_number
           tags:
             - Engagement
       - entity_var:
@@ -190,10 +173,6 @@ var_groups:
           select: avg(datediff(second, {{rsTracksUnionPages.Var("session_start_time")}}, {{rsTracksUnionPages.Var("session_end_time")}}))
           where: "context_session_id is not null and {{rsTracksUnionPages.Var(\"session_row_number\")}} = 1 and {{macro_datediff_n('{{rsTracksUnionPages.Var(\"session_start_time\")}}','365')}}"
           description: Average session length (in seconds) of all the user sessions that started in last 365 days
-          dependencies:
-            - session_row_number
-            - session_start_time
-            - session_end_time
           tags:
             - Engagement
       - entity_var:
@@ -201,8 +180,6 @@ var_groups:
           from: models/rsTracksUnionPages
           select: min(date({{rsTracksUnionPages.Var("session_start_time")}}))
           description: The first date on which an event has been recorded by the user
-          dependencies:
-            - session_start_time
           tags:
             - Engagement
       - entity_var:
@@ -210,8 +187,6 @@ var_groups:
           from: models/rsTracksUnionPages
           select: max(date({{rsTracksUnionPages.Var("session_end_time")}}))
           description: The latest date on which an event has been recorded by the user
-          dependencies:
-            - session_end_time
           tags:
             - Engagement
       - entity_var:
@@ -277,8 +252,6 @@ var_groups:
           from: models/pages_orderby_table
           select: array_agg( context_campaign_source)
           description: list of all sources from which a user has visited the app, sorted in chronological order, from oldest to newest
-          dependencies:
-            - session_start_time
           tags:
             - Attribution
       #Churn features
@@ -286,26 +259,17 @@ var_groups:
           name: is_churned_7_days
           select: case when {{user.Var("days_since_last_seen")}} > 7 then 1 else 0 end
           description: Depending on the n value, it specifies if there is any activity observed in the last 7 days.
-          dependencies:
-            - days_since_last_seen
-            - session_end_time
           tags:
             - Attribution
       - entity_var:
           name: is_churned_30_days
           select: case when {{user.Var("days_since_last_seen")}} > 30 then 1 else 0 end
           description: Depending on the n value, it specifies if there is any activity observed in the last 30 days.
-          dependencies:
-            - days_since_last_seen
-            - session_end_time
           tags:
             - Attribution
       - entity_var:
           name: is_churned_90_days
           select: case when {{user.Var("days_since_last_seen")}} > 90 then 1 else 0 end
           description: Depending on the n value, it specifies if there is any activity observed in the last 90 days.
-          dependencies:
-            - days_since_last_seen
-            - session_end_time
           tags:
             - Attribution
