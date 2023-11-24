@@ -257,19 +257,22 @@ var_groups:
       #Churn features
       - entity_var:
           name: is_churned_7_days
-          select: case when {{user.Var("days_since_last_seen")}} > 7 then 1 else 0 end
+          select: case when {{macro_datediff('max(timestamp)')}} > 7 then 1 else 0 end
           description: Depending on the n value, it specifies if there is any activity observed in the last 7 days.
+          from: models/rsTracksUnionPages
           tags:
             - Attribution
       - entity_var:
           name: is_churned_30_days
-          select: case when {{user.Var("days_since_last_seen")}} > 30 then 1 else 0 end
+          select: case when {{macro_datediff('max(timestamp)')}} > 30 then 1 else 0 end
           description: Depending on the n value, it specifies if there is any activity observed in the last 30 days.
+          from: models/rsTracksUnionPages
           tags:
             - Attribution
       - entity_var:
           name: is_churned_90_days
-          select: case when {{user.Var("days_since_last_seen")}} > 90 then 1 else 0 end
+          select: case when {{macro_datediff('max(timestamp)')}} > 90 then 1 else 0 end
           description: Depending on the n value, it specifies if there is any activity observed in the last 90 days.
+          from: models/rsTracksUnionPages
           tags:
             - Attribution
