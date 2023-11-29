@@ -235,25 +235,25 @@ models:
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: list of all sources from which a user has visited the app, sorted in chronological order, from oldest to newest
         - entity_var:
-            name: FamilyCount
+            name: CustomerType
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Total members of family
+            description: is this customer a household or B2B account
         - entity_var:
             name: content_count
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: how many knowledge content did they consume
         - entity_var:
-            name: PrimaryChildAge
+            name: ProductCount
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Age of first child
+            description: Count of HP Products
         - entity_var:
-            name: SecondaryChildAge
+            name: SupportCustomer
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Age of Second child
+            description: is this customer in the support queue
         - entity_var:
             name: PurchaseHistory
             from: inputs/rsPages
@@ -265,20 +265,20 @@ models:
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: Current/Lapsed/Trial status
         - entity_var:
-            name: SleepCount
+            name: HP_PC_Customer
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: How many sleep events have been triggered
+            description: PC Customer
         - entity_var:
-            name: PumpCount
+            name: HP_Print_Customer
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: How many Pump events have been triggered
+            description: Does this customer use HP print devices
         - entity_var:
-            name: FeedingCount
+            name: HP_Accessories_Customer
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: How many Feeding events have been triggered
+            description: Does this customer use HP Accessories
       features:
         - days_since_last_seen
         - days_since_account_creation
@@ -307,12 +307,12 @@ models:
         - campaigns_list
         - mediums_list
         - sources_list
-        - FamilyCount
+        - CustomerType
         - content_count
-        - PrimaryChildAge
-        - SecondaryChildAge
+        - ProductCount
+        - SupportCustomer
         - PurchaseHistory
         - SubscriptionStatus
-        - SleepCount
-        - PumpCount
-        - FeedingCount
+        - HP_PC_Customer
+        - HP_Print_Customer
+        - HP_Accessories_Customer
