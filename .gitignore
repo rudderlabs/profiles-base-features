@@ -3,3 +3,5 @@ logs
 **/build/
 **/*.egg-info/
 migrations
+original_project_folder
+.DS_Store

@@ -1,1 +1,0 @@
-git+https://github.com/rudderlabs/pywht@wht_test_v44#subdirectory=profiles_rudderstack
