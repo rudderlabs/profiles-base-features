@@ -238,7 +238,7 @@ models:
             name: CustomerType
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: is this customer a household or B2B account
+            description: SMB, Mid Market, Enterprise, Strategic
         - entity_var:
             name: content_count
             from: inputs/rsPages
@@ -248,7 +248,7 @@ models:
             name: ProductCount
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Count of HP Products
+            description: Count of Atlassian Products
         - entity_var:
             name: SupportCustomer
             from: inputs/rsPages
@@ -258,27 +258,37 @@ models:
             name: PurchaseHistory
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: What products household has purchased
+            description: What products Account has purchased
         - entity_var:
             name: SubscriptionStatus
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: Current/Lapsed/Trial status
         - entity_var:
-            name: HP_PC_Customer
+            name: Jira_Customer
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: PC Customer
+            description: Jira User
         - entity_var:
-            name: HP_Print_Customer
+            name: Confluence_Customer
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Does this customer use HP print devices
+            description: Confluence User
         - entity_var:
-            name: HP_Accessories_Customer
+            name: Services_Customer
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Does this customer use HP Accessories
+            description: Services customer
+        - entity_var:
+            name: AccountManager
+            from: inputs/rsPages
+            select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
+            description: CustomerSuccessManager and Solutions Architect
+        - entity_var:
+            name: ChurnRating
+            from: inputs/rsPages
+            select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
+            description: Internal Churn Calculation
       features:
         - days_since_last_seen
         - days_since_account_creation
@@ -311,8 +321,10 @@ models:
         - content_count
         - ProductCount
         - SupportCustomer
-        - PurchaseHistory
+        - PaymentHistory
         - SubscriptionStatus
-        - HP_PC_Customer
-        - HP_Print_Customer
-        - HP_Accessories_Customer
+        - Jira_Customer
+        - Confluence_Customer
+        - Services_Customer
+        - AccountManager
+        - ChurnRating
