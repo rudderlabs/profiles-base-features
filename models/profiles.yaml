@@ -255,7 +255,7 @@ models:
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: is this customer in the support queue
         - entity_var:
-            name: PurchaseHistory
+            name: PaymentHistory
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: What products Account has purchased
