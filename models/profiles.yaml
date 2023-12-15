@@ -250,7 +250,7 @@ models:
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: Count of Atlassian Products
         - entity_var:
-            name: SupportCustomer
+            name: ItemsInCart
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: is this customer in the support queue
@@ -260,27 +260,27 @@ models:
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: What products Account has purchased
         - entity_var:
-            name: SubscriptionStatus
+            name: SpillClubRewards
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: Current/Lapsed/Trial status
         - entity_var:
-            name: Jira_Customer
+            name: QuizParticipation
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: Jira User
         - entity_var:
-            name: Confluence_Customer
+            name: preferredrugshape
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: Confluence User
         - entity_var:
-            name: Services_Customer
+            name: LastCheckoutEvent
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: Services customer
         - entity_var:
-            name: AccountManager
+            name: PreferredStyle
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: CustomerSuccessManager and Solutions Architect
@@ -320,11 +320,11 @@ models:
         - CustomerType
         - content_count
         - ProductCount
-        - SupportCustomer
+        - ItemsInCart
         - PaymentHistory
-        - SubscriptionStatus
-        - Jira_Customer
-        - Confluence_Customer
-        - Services_Customer
-        - AccountManager
+        - SpillClubRewards
+        - QuizParticipation
+        - preferredrugshape
+        - LastCheckoutEvent
+        - PreferredStyle
         - ChurnRating
