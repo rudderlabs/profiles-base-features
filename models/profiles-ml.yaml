@@ -7,7 +7,6 @@ models:
       entity_key: user
       validity_time: 24h # 1 day
       py_repo_url: git@github.com:rudderlabs/rudderstack-profiles-classifier.git
-
       train:
         file_extension: .json
         file_validity: 0s # If the last trained model is older than this, then the model will be trained again,
@@ -24,14 +23,11 @@ models:
             eligible_users: days_since_last_seen<=90
             inputs:
               - packages/base_features/models/rudder_user_base_features
-
-          
           preprocessing: &model_prep_configs_7_days
             ignore_features:
               - user_email
               - first_name
               - last_name
-
       predict:
         inputs:
           - models/rudder_user_base_features
@@ -46,9 +42,7 @@ models:
               features:
                 - name: *percentile_name_7_days
                   description: 'Percentile of churn score. Higher the percentile, higher the probability of churn'
-
-      <<: *feature_meta_data_7_days
-
+      !!merge <<: *feature_meta_data_7_days
   - name: &model_name_30_days churn_30_days_model
     model_type: python_model
     model_spec:
@@ -56,7 +50,6 @@ models:
       entity_key: user
       validity_time: 24h # 1 day
       py_repo_url: git@github.com:rudderlabs/rudderstack-profiles-classifier.git
-
       train:
         file_extension: .json
         file_validity: 0s # If the last trained model is older than this, then the model will be trained again,
@@ -73,14 +66,11 @@ models:
             eligible_users: days_since_last_seen<=90
             inputs:
               - packages/base_features/models/rudder_user_base_features
-
-          
           preprocessing: &model_prep_configs_30_days
             ignore_features:
               - user_email
               - first_name
               - last_name
-
       predict:
         inputs:
           - models/rudder_user_base_features
@@ -95,9 +85,7 @@ models:
               features:
                 - name: *percentile_name_30_days
                   description: 'Percentile of churn score. Higher the percentile, higher the probability of churn'
-
-      <<: *feature_meta_data_30_days
-
+      !!merge <<: *feature_meta_data_30_days
   - name: &model_name_90_days churn_90_days_model
     model_type: python_model
     model_spec:
@@ -105,7 +93,6 @@ models:
       entity_key: user
       validity_time: 24h # 1 day
       py_repo_url: git@github.com:rudderlabs/rudderstack-profiles-classifier.git
-
       train:
         file_extension: .json
         file_validity: 0s # If the last trained model is older than this, then the model will be trained again,
@@ -122,8 +109,6 @@ models:
             eligible_users: days_since_last_seen<=90
             inputs:
               - packages/base_features/models/rudder_user_base_features
-
-          
           preprocessing: &model_prep_configs_90_days
             ignore_features:
               - user_email
@@ -143,5 +128,4 @@ models:
               features:
                 - name: *percentile_name_90_days
                   description: 'Percentile of churn score. Higher the percentile, higher the probability of churn'
-
-      <<: *feature_meta_data_90_days
+      !!merge <<: *feature_meta_data_90_days
