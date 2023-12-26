@@ -22,7 +22,7 @@ models:
             output_profiles_ml_model: *model_name_7_days # Name of output model based on current model to dinstinguish between multiple models
             eligible_users: days_since_last_seen<=90
             inputs:
-              - models/rudder_user_base_features
+              - packages/base_features/models/rudder_user_base_features
           preprocessing: &model_prep_configs_7_days
             ignore_features:
               - user_email
@@ -65,7 +65,7 @@ models:
             output_profiles_ml_model: *model_name_30_days # Name of output model based on current model to dinstinguish between multiple models
             eligible_users: days_since_last_seen<=90
             inputs:
-              - models/rudder_user_base_features
+              - packages/base_features/models/rudder_user_base_features
           preprocessing: &model_prep_configs_30_days
             ignore_features:
               - user_email
@@ -108,7 +108,7 @@ models:
             output_profiles_ml_model: *model_name_90_days # Name of output model based on current model to dinstinguish between multiple models
             eligible_users: days_since_last_seen<=90
             inputs:
-              - models/rudder_user_base_features
+              - packages/base_features/models/rudder_user_base_features
           preprocessing: &model_prep_configs_90_days
             ignore_features:
               - user_email
