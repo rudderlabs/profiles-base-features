@@ -9,9 +9,9 @@ models:
       py_repo_url: git@github.com:rudderlabs/rudderstack-profiles-classifier.git
       train:
         file_extension: .json
-        file_validity: 0s # If the last trained model is older than this, then the model will be trained again,
+        file_validity: 168h # If the last trained model is older than this, then the model will be trained again,
         inputs: &inputs_7_days
-          - models/rudder_user_base_features # inputs to materialise the required data for model
+          - models/rudder_user_base_features
         config:
           data: &model_data_configs_7_days
             label_column: is_churned_7_days # Name of column for which we want to find predictions
@@ -22,7 +22,7 @@ models:
             output_profiles_ml_model: *model_name_7_days # Name of output model based on current model to dinstinguish between multiple models
             eligible_users: days_since_last_seen<=90
             inputs:
-              - packages/base_features/models/rudder_user_base_features
+              - models/rudder_user_base_features
           preprocessing: &model_prep_configs_7_days
             ignore_features:
               - user_email
@@ -52,7 +52,7 @@ models:
       py_repo_url: git@github.com:rudderlabs/rudderstack-profiles-classifier.git
       train:
         file_extension: .json
-        file_validity: 0s # If the last trained model is older than this, then the model will be trained again,
+        file_validity: 168h # If the last trained model is older than this, then the model will be trained again,
         inputs: &inputs_30_days
           - models/rudder_user_base_features # inputs to materialise the required data for model
         config:
@@ -65,7 +65,7 @@ models:
             output_profiles_ml_model: *model_name_30_days # Name of output model based on current model to dinstinguish between multiple models
             eligible_users: days_since_last_seen<=90
             inputs:
-              - packages/base_features/models/rudder_user_base_features
+              - models/rudder_user_base_features
           preprocessing: &model_prep_configs_30_days
             ignore_features:
               - user_email
@@ -95,7 +95,7 @@ models:
       py_repo_url: git@github.com:rudderlabs/rudderstack-profiles-classifier.git
       train:
         file_extension: .json
-        file_validity: 0s # If the last trained model is older than this, then the model will be trained again,
+        file_validity: 168h # If the last trained model is older than this, then the model will be trained again,
         inputs: &inputs_90_days
           - models/rudder_user_base_features # inputs to materialise the required data for model
         config:
@@ -108,7 +108,7 @@ models:
             output_profiles_ml_model: *model_name_90_days # Name of output model based on current model to dinstinguish between multiple models
             eligible_users: days_since_last_seen<=90
             inputs:
-              - packages/base_features/models/rudder_user_base_features
+              - models/rudder_user_base_features
           preprocessing: &model_prep_configs_90_days
             ignore_features:
               - user_email
