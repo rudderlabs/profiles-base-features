@@ -255,10 +255,10 @@ models:
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: iOS or Android
         - entity_var:
-            name: PaymentHistory
+            name: FundraisingPartner
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: What products Account has purchased
+            description: Is this user a fundraiser
         - entity_var:
             name: Denomination
             from: inputs/rsPages
@@ -321,7 +321,7 @@ models:
         - content_count
         - Donor
         - MobileAppUsers
-        - PaymentHistory
+        - FundraisingPartner
         - Denomination
         - MyChosenStory
         - StreamingCustomer
