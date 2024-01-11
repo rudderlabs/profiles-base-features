@@ -245,15 +245,15 @@ models:
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: how many knowledge content did they consume
         - entity_var:
-            name: ProductCount
+            name: Donor
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Count of Products purchased
+            description: Is this user a donor
         - entity_var:
-            name: ItemsInCart
+            name: MobileAppUsers
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: how many items are they intent on purchasing
+            description: iOS or Android
         - entity_var:
             name: PaymentHistory
             from: inputs/rsPages
@@ -319,8 +319,8 @@ models:
         - sources_list
         - CustomerType
         - content_count
-        - ProductCount
-        - ItemsInCart
+        - Donor
+        - MobileAppUsers
         - PaymentHistory
         - Denomination
         - MyChosenStory
