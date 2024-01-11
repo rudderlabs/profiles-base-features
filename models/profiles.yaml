@@ -263,27 +263,27 @@ models:
             name: Denomination
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Current/Lapsed/Trial status
+            description: What church is the customer a member of
         - entity_var:
             name: MyChosenStory
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Jira User
+            description: Story Summary
         - entity_var:
             name: StreamingCustomer
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Confluence User
+            description: Is the user a streaming platform customer
         - entity_var:
             name: LastCheckoutEvent
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Services customer
+            description: Did the user churn from checkout
         - entity_var:
             name: LicenseType
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: CustomerSuccessManager and Solutions Architect
+            description: what kind of license does the customer carry
         - entity_var:
             name: ChurnRating
             from: inputs/rsPages
