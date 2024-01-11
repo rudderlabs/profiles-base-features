@@ -248,12 +248,12 @@ models:
             name: ProductCount
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Count of Atlassian Products
+            description: Count of Products purchased
         - entity_var:
             name: ItemsInCart
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: is this customer in the support queue
+            description: how many items are they intent on purchasing
         - entity_var:
             name: PaymentHistory
             from: inputs/rsPages
