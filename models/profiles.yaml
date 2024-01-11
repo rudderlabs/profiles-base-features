@@ -260,17 +260,17 @@ models:
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: What products Account has purchased
         - entity_var:
-            name: SpillClubRewards
+            name: Denomination
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: Current/Lapsed/Trial status
         - entity_var:
-            name: QuizParticipation
+            name: MyChosenStory
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: Jira User
         - entity_var:
-            name: preferredrugshape
+            name: StreamingCustomer
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: Confluence User
@@ -280,7 +280,7 @@ models:
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: Services customer
         - entity_var:
-            name: PreferredStyle
+            name: LicenseType
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: CustomerSuccessManager and Solutions Architect
