@@ -16,6 +16,7 @@ entities:
     id_types:
       - user_id
       - anonymous_id
+      - email
       - cart_token
 id_types:
   - name: user_id
@@ -28,6 +29,11 @@ id_types:
         value: "unknown"
       - type: exclude
         value: "NaN"
-
+  - name: email
+    filters:
+      - type: include
+        regex: ".+@.+"
+      - type: exclude
+        value: "test@company.com"
 python_requirements:
   - profiles-pycorelib==0.2.1
