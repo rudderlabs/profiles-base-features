@@ -12,6 +12,7 @@ inputs:
         - name: timestamp
         - name: user_id
         - name: anonymous_id
+        - name: email
     app_defaults:
       table: RUDDERSTACK_TEST_DB.DATA_APPS_SIMULATED_SHOPIFY.IDENTIFIES
       occurred_at_col: timestamp
@@ -21,6 +22,9 @@ inputs:
           entity: user
         - select: "anonymous_id"
           type: anonymous_id
+          entity: user
+        - select: "lower(email)"
+          type: email
           entity: user
   - name: rsIdentifies_2
     source_metadata:
@@ -35,6 +39,7 @@ inputs:
         - name: timestamp
         - name: user_id
         - name: anonymous_id
+        - name: email
     app_defaults:
       table: RUDDERSTACK_TEST_DB.DATA_APPS_SIMULATED_SHOPIFY.IDENTIFIES
       occurred_at_col: timestamp
@@ -44,6 +49,9 @@ inputs:
           entity: user
         - select: "anonymous_id"
           type: anonymous_id
+          entity: user
+        - select: "lower(email)"
+          type: email
           entity: user
   - name: rsIdentifies_3
     source_metadata:
@@ -58,6 +66,7 @@ inputs:
         - name: timestamp
         - name: user_id
         - name: anonymous_id
+        - name: email
     app_defaults:
       table: RUDDERSTACK_TEST_DB.DATA_APPS_SIMULATED_SHOPIFY.IDENTIFIES
       occurred_at_col: timestamp
@@ -67,6 +76,9 @@ inputs:
           entity: user
         - select: "anonymous_id"
           type: anonymous_id
+          entity: user
+        - select: "lower(email)"
+          type: email
           entity: user
   - name: rsTracks_1
     source_metadata:
