@@ -322,9 +322,9 @@ models:
         - ProductCount
         - ItemsInCart
         - PaymentHistory
-        - SpillClubRewards
-        - QuizParticipation
-        - preferredrugshape
+        - Denomination
+        - MyChosenStory
+        - StreamingCustomer
         - LastCheckoutEvent
-        - PreferredStyle
+        - LicenseType
         - ChurnRating
