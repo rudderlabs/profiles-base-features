@@ -235,45 +235,45 @@ models:
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: list of all sources from which a user has visited the app, sorted in chronological order, from oldest to newest
         - entity_var:
-            name: CustomerType
+            name: HolidayPackage
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: SMB, Mid Market, Enterprise, Strategic
+            description: Leveraged our planning services
         - entity_var:
             name: content_count
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: how many knowledge content did they consume
         - entity_var:
-            name: Donor
+            name: InsuranceCustomer
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Is this user a donor
+            description: Is this user using our travel insurance
         - entity_var:
-            name: MobileAppUsers
+            name: HotelPartner
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: iOS or Android
+            description: Corporate Partners
         - entity_var:
-            name: FundraisingPartner
+            name: HotelCustomer
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Is this user a fundraiser
+            description: User booked hotel with Olive
         - entity_var:
-            name: Denomination
+            name: PassportVisaCustomer
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: What church is the customer a member of
+            description: Did this user use our Passport or Visa services
         - entity_var:
-            name: MyChosenStory
+            name: TicketingCustomer
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Story Summary
+            description: Did this user buy flights from Olive
         - entity_var:
-            name: StreamingCustomer
+            name: CorporateTravelCustomer
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Is the user a streaming platform customer
+            description: Is the user a B2B customer
         - entity_var:
             name: LastCheckoutEvent
             from: inputs/rsPages
@@ -317,14 +317,14 @@ models:
         - campaigns_list
         - mediums_list
         - sources_list
-        - CustomerType
+        - HolidayPackage
         - content_count
-        - Donor
-        - MobileAppUsers
-        - FundraisingPartner
-        - Denomination
-        - MyChosenStory
-        - StreamingCustomer
+        - InsuranceCustomer
+        - HotelPartner
+        - HotelCustomer
+        - PassportVisaCustomer
+        - TicketingCustomer
+        - CorporateTravelCustomer
         - LastCheckoutEvent
         - LicenseType
         - ChurnRating
