@@ -23,6 +23,7 @@ var_groups:
           from: models/rsIdentifiesFinal
           select: first_value(state)
           window:
+            frame_clause: ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
             order_by:
               - timestamp desc
           where: state is not null and state!=''
@@ -33,6 +34,7 @@ var_groups:
           from: models/rsIdentifiesFinal
           select: first_value(address_country)
           window:
+            frame_clause: ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
             order_by:
               - timestamp desc
           where: address_country is not null and address_country!=''
@@ -43,8 +45,9 @@ var_groups:
           from: models/rsIdentifiesFinal
           select: first_value(first_name)
           window:
+            frame_clause: ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
             order_by:
-              - timestamp desc
+              - timestamp desc  
           where: first_name is not null and first_name!=''
           tags:
             - Demographics
@@ -53,6 +56,7 @@ var_groups:
           from: models/rsIdentifiesFinal
           select: first_value(last_name)
           window:
+            frame_clause: ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
             order_by:
               - timestamp desc
           where: last_name is not null and last_name!=''
@@ -63,6 +67,7 @@ var_groups:
           from: models/rsIdentifiesFinal
           select: first_value(currency)
           window:
+            frame_clause: ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
             order_by:
               - timestamp desc
           where: currency is not null and currency!=''
@@ -194,6 +199,7 @@ var_groups:
           from: models/rsPagesFinal
           select: first_value(context_campaign_name)
           window:
+            frame_clause: ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
             order_by:
               - timestamp asc
           where: context_campaign_name is not null and context_campaign_name!=''
@@ -205,6 +211,7 @@ var_groups:
           from: models/rsPagesFinal
           select: last_value(context_campaign_name)
           window:
+            frame_clause: ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
             order_by:
               - timestamp asc
           where: context_campaign_name is not null and context_campaign_name!=''
@@ -216,6 +223,7 @@ var_groups:
           from: models/rsPagesFinal
           select: first_value(context_campaign_source)
           window:
+            frame_clause: ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
             order_by:
               - timestamp asc
           where: context_campaign_source is not null and context_campaign_source!=''
@@ -227,6 +235,7 @@ var_groups:
           from: models/rsPagesFinal
           select: last_value(context_campaign_source)
           window:
+            frame_clause: ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
             order_by:
               - timestamp asc
           where: context_campaign_source is not null and context_campaign_source!=''
