@@ -238,7 +238,7 @@ models:
             name: HolidayPackage
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Leveraged our planning services
+            description: Holiday special
         - entity_var:
             name: content_count
             from: inputs/rsPages
@@ -248,7 +248,7 @@ models:
             name: TripCount
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Is this user using our travel insurance
+            description: How many flights did the customer take
         - entity_var:
             name: HotelPartner
             from: inputs/rsPages
@@ -258,17 +258,17 @@ models:
             name: BladeAirportPass
             from: inputs/rsIdentifies
             select: array_agg( AirportPass) WITHIN GROUP (ORDER BY timestamp asc)
-            description: User booked hotel with Olive
+            description: User member of airport pass boolean
         - entity_var:
             name: MostFrequentDestination
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Did this user use our Passport or Visa services
+            description: Most frequent city of use
         - entity_var:
             name: HomeCity
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
-            description: Did this user buy flights from Olive
+            description: Where is the users base city
         - entity_var:
             name: CorporateTravelCustomer
             from: inputs/rsPages
@@ -283,7 +283,7 @@ models:
             name: LastTrip
             from: inputs/rsTracks
             select: array_agg( executeRide) WITHIN GROUP (ORDER BY timestamp asc)
-            description: what kind of license does the customer carry
+            description: Last flight user took
         - entity_var:
             name: ChurnRating
             from: inputs/rsPages
