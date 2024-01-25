@@ -241,12 +241,12 @@ models:
             description: Holiday special
         - entity_var:
             name: content_count
-            from: inputs/rsPages
+            from: inputs/rsTracks
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: how many knowledge content did they consume
         - entity_var:
             name: TripCount
-            from: inputs/rsPages
+            from: inputs/rsTracks
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: How many flights did the customer take
         - entity_var:
@@ -261,22 +261,22 @@ models:
             description: User member of airport pass boolean
         - entity_var:
             name: MostFrequentDestination
-            from: inputs/rsPages
+            from: inputs/rsTracks
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: Most frequent city of use
         - entity_var:
             name: HomeCity
-            from: inputs/rsPages
+            from: inputs/rsIdentifies
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: Where is the users base city
         - entity_var:
             name: CorporateTravelCustomer
-            from: inputs/rsPages
+            from: inputs/rsIdentifies
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: Is the user a B2B customer
         - entity_var:
             name: LastCheckoutEvent
-            from: inputs/rsPages
+            from: inputs/rsTracks
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: Did the user churn from checkout
         - entity_var:
@@ -284,6 +284,11 @@ models:
             from: inputs/rsTracks
             select: array_agg( executeRide) WITHIN GROUP (ORDER BY timestamp asc)
             description: Last flight user took
+        - entity_var:
+            name: CustomerAcquisitionCost
+            from: inputs/rsTracks
+            select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
+            description: Internal Churn Calculation
         - entity_var:
             name: ChurnRating
             from: inputs/rsPages
@@ -327,4 +332,5 @@ models:
         - CorporateTravelCustomer
         - LastCheckoutEvent
         - LastTrip
+        - CustomerAcquisitionCost
         - ChurnRating
