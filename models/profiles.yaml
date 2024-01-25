@@ -245,7 +245,7 @@ models:
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: how many knowledge content did they consume
         - entity_var:
-            name: InsuranceCustomer
+            name: TripCount
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: Is this user using our travel insurance
@@ -255,17 +255,17 @@ models:
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: Corporate Partners
         - entity_var:
-            name: HotelCustomer
-            from: inputs/rsPages
-            select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
+            name: BladeAirportPass
+            from: inputs/rsIdentifies
+            select: array_agg( AirportPass) WITHIN GROUP (ORDER BY timestamp asc)
             description: User booked hotel with Olive
         - entity_var:
-            name: PassportVisaCustomer
+            name: MostFrequentDestination
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: Did this user use our Passport or Visa services
         - entity_var:
-            name: TicketingCustomer
+            name: HomeCity
             from: inputs/rsPages
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: Did this user buy flights from Olive
@@ -280,9 +280,9 @@ models:
             select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
             description: Did the user churn from checkout
         - entity_var:
-            name: LicenseType
-            from: inputs/rsPages
-            select: array_agg( context_campaign_source) WITHIN GROUP (ORDER BY timestamp asc)
+            name: LastTrip
+            from: inputs/rsTracks
+            select: array_agg( executeRide) WITHIN GROUP (ORDER BY timestamp asc)
             description: what kind of license does the customer carry
         - entity_var:
             name: ChurnRating
@@ -319,12 +319,12 @@ models:
         - sources_list
         - HolidayPackage
         - content_count
-        - InsuranceCustomer
+        - TripCount
         - HotelPartner
-        - HotelCustomer
-        - PassportVisaCustomer
-        - TicketingCustomer
+        - BladeAirportPass
+        - MostFrequentDestination
+        - HomeCity
         - CorporateTravelCustomer
         - LastCheckoutEvent
-        - LicenseType
+        - LastTrip
         - ChurnRating
