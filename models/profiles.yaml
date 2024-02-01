@@ -8,6 +8,7 @@ models:
         - from: inputs/rsIdentifies
         - from: inputs/rsTracks
         - from: inputs/rsPages
+        - from: inputs/rsOrderCompleted
           # Remove the section below, if you don't want to generate a feature table
   - name: pages_orderby_table
     model_type: sql_template
@@ -86,6 +87,21 @@ models:
             name: days_since_account_creation
             select: "{{macro_datediff('min(timestamp)')}}"
             from: inputs/rsIdentifies
+        # LTV features
+        - entity_var:
+            name: gross_amt_spent_in_past_30_days
+            default: 0
+            select: sum(PROPERTIES_REVENUE::real)
+            from: inputs/rsOrderCompleted
+            where: "{{macro_datediff_n('timestamp','30')}}"
+            description: Total value of products purchased till date.  
+        - entity_var:
+            name: gross_amt_spent_in_past_90_days
+            default: 0
+            select: sum(PROPERTIES_REVENUE::real)
+            from: inputs/rsOrderCompleted
+            where: "{{macro_datediff_n('timestamp','90')}}"
+            description: Total value of products purchased till date.  
         # - entity_var:
         #     name: state
         #     from: inputs/rsIdentifies
@@ -323,6 +339,8 @@ models:
         - is_churned_7_days
         - is_churned_30_days
         - is_churned_90_days
+        - gross_amt_spent_in_past_30_days
+        - gross_amt_spent_in_past_90_days
         # - first_campaign_name
         # - last_campaign_name
         # - first_source_name
