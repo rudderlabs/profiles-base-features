@@ -89,16 +89,42 @@ models:
             from: inputs/rsIdentifies
         # LTV features
         - entity_var:
+            name: n_orders_completed
+            default: 0
+            select: count(*)
+            from: inputs/rsOrderCompleted
+            description: Total value of products purchased till date.
+        - entity_var:
+            name: n_orders_completed_past_30_days
+            default: 0
+            select: count(*)
+            from: inputs/rsOrderCompleted
+            where: "{{macro_datediff_n('timestamp','30')}}"
+            description: Total value of products purchased till date.
+        - entity_var:
+            name: n_orders_completed_past_90_days
+            default: 0
+            select: count(*)
+            from: inputs/rsOrderCompleted
+            where: "{{macro_datediff_n('timestamp','90')}}"
+            description: Total value of products purchased till date.  
+        - entity_var:
+            name: gross_amt_spent_overall
+            default: 0
+            select: sum(REVENUE::real)
+            from: inputs/rsOrderCompleted
+            description: Total value of products purchased till date.  
+        - entity_var:
             name: gross_amt_spent_in_past_30_days
             default: 0
-            select: sum(PROPERTIES_REVENUE::real)
+            select: sum(REVENUE::real)
             from: inputs/rsOrderCompleted
             where: "{{macro_datediff_n('timestamp','30')}}"
             description: Total value of products purchased till date.  
         - entity_var:
             name: gross_amt_spent_in_past_90_days
             default: 0
-            select: sum(PROPERTIES_REVENUE::real)
+            select: sum(REVENUE::real)
             from: inputs/rsOrderCompleted
             where: "{{macro_datediff_n('timestamp','90')}}"
             description: Total value of products purchased till date.  
@@ -339,6 +365,10 @@ models:
         - is_churned_7_days
         - is_churned_30_days
         - is_churned_90_days
+        - n_orders_completed
+        - n_orders_completed_past_30_days
+        - n_orders_completed_past_90_days
+        - gross_amt_spent_overall
         - gross_amt_spent_in_past_30_days
         - gross_amt_spent_in_past_90_days
         # - first_campaign_name
