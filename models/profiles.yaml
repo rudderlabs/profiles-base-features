@@ -93,41 +93,41 @@ models:
             default: 0
             select: count(*)
             from: inputs/rsOrderCompleted
-            description: Total value of products purchased till date.
+            description: Total number of orders completed till date.
         - entity_var:
             name: n_orders_completed_past_30_days
             default: 0
             select: count(*)
             from: inputs/rsOrderCompleted
             where: "{{macro_datediff_n('timestamp','30')}}"
-            description: Total value of products purchased till date.
+            description: Total number of orders completed in past 30 days.
         - entity_var:
             name: n_orders_completed_past_90_days
             default: 0
             select: count(*)
             from: inputs/rsOrderCompleted
             where: "{{macro_datediff_n('timestamp','90')}}"
-            description: Total value of products purchased till date.  
+            description: Total number of orders completed in past 90 days. 
         - entity_var:
             name: gross_amt_spent_overall
             default: 0
             select: sum(REVENUE::real)
             from: inputs/rsOrderCompleted
-            description: Total value of products purchased till date.  
+            description: Total amount spent till date.
         - entity_var:
             name: gross_amt_spent_in_past_30_days
             default: 0
             select: sum(REVENUE::real)
             from: inputs/rsOrderCompleted
             where: "{{macro_datediff_n('timestamp','30')}}"
-            description: Total value of products purchased till date.  
+            description: Total amount spent in past 30 days. 
         - entity_var:
             name: gross_amt_spent_in_past_90_days
             default: 0
             select: sum(REVENUE::real)
             from: inputs/rsOrderCompleted
             where: "{{macro_datediff_n('timestamp','90')}}"
-            description: Total value of products purchased till date.  
+            description: Total amount spent in past 90 days.
         # - entity_var:
         #     name: state
         #     from: inputs/rsIdentifies
