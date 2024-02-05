@@ -16,9 +16,7 @@ models:
           data: &model_data_configs_7_days
             label_column: is_churned_7_days # Name of column for which we want to find predictions
             label_value: 1 # Value of label column for which prediction is generated
-            package_name: feature_table # Name of the package where the profiles feature table is defined (declared in pb_project.yaml packages)
             prediction_horizon_days: 7 # Number of days in future for which we want to predict
-            features_profiles_model: 'rudder_user_base_features' # Model name
             output_profiles_ml_model: *model_name_7_days # Name of output model based on current model to dinstinguish between multiple models
             eligible_users: days_since_last_seen<=90
             inputs:
@@ -59,9 +57,7 @@ models:
           data: &model_data_configs_30_days
             label_column: is_churned_30_days # Name of column for which we want to find predictions
             label_value: 1 # Value of label column for which prediction is generated
-            package_name: feature_table # Name of the package where the profiles feature table is defined (declared in pb_project.yaml packages)
             prediction_horizon_days: 30 # Number of days in future for which we want to predict
-            features_profiles_model: 'rudder_user_base_features' # Model name
             output_profiles_ml_model: *model_name_30_days # Name of output model based on current model to dinstinguish between multiple models
             eligible_users: days_since_last_seen<=90
             inputs:
@@ -102,9 +98,7 @@ models:
           data: &model_data_configs_90_days
             label_column: is_churned_90_days # Name of column for which we want to find predictions
             label_value: 1 # Value of label column for which prediction is generated
-            package_name: feature_table # Name of the package where the profiles feature table is defined (declared in pb_project.yaml packages)
             prediction_horizon_days: 90 # Number of days in future for which we want to predict
-            features_profiles_model: 'rudder_user_base_features' # Model name
             output_profiles_ml_model: *model_name_90_days # Name of output model based on current model to dinstinguish between multiple models
             eligible_users: days_since_last_seen<=90
             inputs:
