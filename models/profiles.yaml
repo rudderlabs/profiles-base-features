@@ -8,6 +8,7 @@ models:
         - from: inputs/rsIdentifies
         - from: inputs/rsTracks
         - from: inputs/rsPages
+        - from: inputs/rsOrderCompleted
           # Remove the section below, if you don't want to generate a feature table
   - name: pages_orderby_table
     model_type: sql_template
@@ -86,6 +87,47 @@ models:
             name: days_since_account_creation
             select: "{{macro_datediff('min(timestamp)')}}"
             from: inputs/rsIdentifies
+        # LTV features
+        - entity_var:
+            name: n_orders_completed
+            default: 0
+            select: count(*)
+            from: inputs/rsOrderCompleted
+            description: Total number of orders completed till date.
+        - entity_var:
+            name: n_orders_completed_past_30_days
+            default: 0
+            select: count(*)
+            from: inputs/rsOrderCompleted
+            where: "{{macro_datediff_n('timestamp','30')}}"
+            description: Total number of orders completed in past 30 days.
+        - entity_var:
+            name: n_orders_completed_past_90_days
+            default: 0
+            select: count(*)
+            from: inputs/rsOrderCompleted
+            where: "{{macro_datediff_n('timestamp','90')}}"
+            description: Total number of orders completed in past 90 days. 
+        - entity_var:
+            name: gross_amt_spent_overall
+            default: 0
+            select: sum(REVENUE::real)
+            from: inputs/rsOrderCompleted
+            description: Total amount spent till date.
+        - entity_var:
+            name: gross_amt_spent_in_past_30_days
+            default: 0
+            select: sum(REVENUE::real)
+            from: inputs/rsOrderCompleted
+            where: "{{macro_datediff_n('timestamp','30')}}"
+            description: Total amount spent in past 30 days. 
+        - entity_var:
+            name: gross_amt_spent_in_past_90_days
+            default: 0
+            select: sum(REVENUE::real)
+            from: inputs/rsOrderCompleted
+            where: "{{macro_datediff_n('timestamp','90')}}"
+            description: Total amount spent in past 90 days.
         # - entity_var:
         #     name: state
         #     from: inputs/rsIdentifies
@@ -323,6 +365,12 @@ models:
         - is_churned_7_days
         - is_churned_30_days
         - is_churned_90_days
+        - n_orders_completed
+        - n_orders_completed_past_30_days
+        - n_orders_completed_past_90_days
+        - gross_amt_spent_overall
+        - gross_amt_spent_in_past_30_days
+        - gross_amt_spent_in_past_90_days
         # - first_campaign_name
         # - last_campaign_name
         # - first_source_name

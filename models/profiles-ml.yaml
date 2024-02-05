@@ -17,13 +17,10 @@ models:
           data: &model_data_configs_7_days
             label_column: is_churned_7_days # Name of column for which we want to find predictions
             label_value: 1 # Value of label column for which prediction is generated
-            package_name: feature_table # Name of the package where the profiles feature table is defined (declared in pb_project.yaml packages)
             prediction_horizon_days: 7 # Number of days in future for which we want to predict
-            features_profiles_model: 'rudder_user_base_features' # Model name
             output_profiles_ml_model: *model_name_7_days # Name of output model based on current model to dinstinguish between multiple models
             eligible_users: days_since_last_seen<=90
-            inputs:
-              - models/rudder_user_base_features
+            inputs: *inputs_7_days
 
           
           preprocessing: &model_prep_configs_7_days
@@ -33,8 +30,7 @@ models:
               - last_name
 
       predict:
-        inputs:
-          - models/rudder_user_base_features
+        inputs: *inputs_7_days
         config:
           data: *model_data_configs_7_days # Use the same config as training
           preprocessing: *model_prep_configs_7_days # Use the same config as training
@@ -66,13 +62,10 @@ models:
           data: &model_data_configs_30_days
             label_column: is_churned_30_days # Name of column for which we want to find predictions
             label_value: 1 # Value of label column for which prediction is generated
-            package_name: feature_table # Name of the package where the profiles feature table is defined (declared in pb_project.yaml packages)
             prediction_horizon_days: 30 # Number of days in future for which we want to predict
-            features_profiles_model: 'rudder_user_base_features' # Model name
             output_profiles_ml_model: *model_name_30_days # Name of output model based on current model to dinstinguish between multiple models
             eligible_users: days_since_last_seen<=90
-            inputs:
-              - models/rudder_user_base_features
+            inputs: *inputs_30_days
 
           
           preprocessing: &model_prep_configs_30_days
@@ -82,8 +75,7 @@ models:
               - last_name
 
       predict:
-        inputs:
-          - models/rudder_user_base_features
+        inputs: *inputs_30_days
         config:
           data: *model_data_configs_30_days # Use the same config as training
           preprocessing: *model_prep_configs_30_days # Use the same config as training
@@ -115,13 +107,10 @@ models:
           data: &model_data_configs_90_days
             label_column: is_churned_90_days # Name of column for which we want to find predictions
             label_value: 1 # Value of label column for which prediction is generated
-            package_name: feature_table # Name of the package where the profiles feature table is defined (declared in pb_project.yaml packages)
             prediction_horizon_days: 90 # Number of days in future for which we want to predict
-            features_profiles_model: 'rudder_user_base_features' # Model name
             output_profiles_ml_model: *model_name_90_days # Name of output model based on current model to dinstinguish between multiple models
             eligible_users: days_since_last_seen<=90
-            inputs:
-              - models/rudder_user_base_features
+            inputs: *inputs_90_days
 
           
           preprocessing: &model_prep_configs_90_days
@@ -130,8 +119,7 @@ models:
               - first_name
               - last_name
       predict:
-        inputs:
-          - models/rudder_user_base_features
+        inputs: *inputs_90_days
         config:
           data: *model_data_configs_90_days # Use the same config as training
           preprocessing: *model_prep_configs_90_days # Use the same config as training
@@ -145,3 +133,44 @@ models:
                   description: 'Percentile of churn score. Higher the percentile, higher the probability of churn'
 
       <<: *feature_meta_data_90_days
+
+  - name: &amt_spent_model_name_90_days predicted_amt_spent_next_90_days
+    model_type: python_model
+    model_spec:
+      occurred_at_col: insert_ts
+      entity_key: user
+      validity_time: 24h # 1 day
+      py_repo_url: git@github.com:rudderlabs/rudderstack-profiles-classifier.git
+      train:
+        file_extension: .json
+        file_validity: 168h # If the last trained model is older than this, then the model will be trained again,
+        inputs: &inputs_amt_spent_90_days
+          - models/rudder_user_base_features # inputs to materialise the required data for model
+        config:
+          data: &model_amt_spent_data_configs_90_days
+            label_column: gross_amt_spent_in_past_90_days # Name of column for which we want to find predictions
+            prediction_horizon_days: 90 # Number of days in future for which we want to predict
+            output_profiles_ml_model: *amt_spent_model_name_90_days # Name of output model based on current model to dinstinguish between multiple models
+            eligible_users: days_since_last_seen<=90
+            task: 'regression'
+            inputs: *inputs_amt_spent_90_days
+          preprocessing: &model_amt_spent_prep_configs_90_days
+            ignore_features:
+              - user_email
+              - first_name
+              - last_name
+      predict:
+        inputs: *inputs_amt_spent_90_days
+        config:
+          data: *model_amt_spent_data_configs_90_days # Use the same config as training
+          preprocessing: *model_amt_spent_prep_configs_90_days # Use the same config as training
+          outputs:
+            column_names:
+              percentile: &amt_spent_percentile_name_90_days percentile_amt_spent_score_90_days # Name of column in output table having percentile score
+              score: amt_spent_score_90_days # Name of column in output table having probabilistic score
+            feature_meta_data: &feature_amt_spent_meta_data_90_days
+              features:
+                - name: *amt_spent_percentile_name_90_days
+                  description: 'Percentile of amt_spent score. Higher the percentile, higher the probability of amt_spent'
+      <<: *feature_amt_spent_meta_data_90_days
+      
