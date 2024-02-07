@@ -52,7 +52,6 @@ models:
           - name: context_campaign_source
           - name: context_campaign_medium
           - name: timestamp
-
   - name: rudder_user_base_features
     model_type: feature_table_model
     model_spec:
