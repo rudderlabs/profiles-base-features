@@ -22,14 +22,11 @@ models:
             eligible_users:
             inputs:
               - packages/base_features/models/rudder_user_base_features
-
-          
           preprocessing: &model_prep_configs_7_days
             ignore_features:
               - user_email
               - first_name
               - last_name
-
       predict:
         inputs:
           - models/rudder_user_base_features
@@ -43,10 +40,8 @@ models:
             feature_meta_data: &feature_meta_data_7_days
               features:
                 - name: *percentile_name_7_days
-                  description: 'Percentile of churn score. Higher the percentile, higher the probability of churn'
-
+                  description: "Percentile of churn score. Higher the percentile, higher the probability of churn"
       <<: *feature_meta_data_7_days
-
   - name: &model_name_30_days churn_30_days_model
     model_type: python_model
     model_spec:
@@ -66,17 +61,14 @@ models:
             label_value: 1 # Value of label column for which prediction is generated
             prediction_horizon_days: 30 # Number of days in future for which we want to predict
             output_profiles_ml_model: *model_name_30_days # Name of output model based on current model to dinstinguish between multiple models
-            eligible_users: 
+            eligible_users:
             inputs:
               - packages/base_features/models/rudder_user_base_features
-
-          
           preprocessing: &model_prep_configs_30_days
             ignore_features:
               - user_email
               - first_name
               - last_name
-
       predict:
         inputs:
           - models/rudder_user_base_features
@@ -90,10 +82,8 @@ models:
             feature_meta_data: &feature_meta_data_30_days
               features:
                 - name: *percentile_name_30_days
-                  description: 'Percentile of churn score. Higher the percentile, higher the probability of churn'
-
+                  description: "Percentile of churn score. Higher the percentile, higher the probability of churn"
       <<: *feature_meta_data_30_days
-
   - name: &model_name_90_days churn_90_days_model
     model_type: python_model
     model_spec:
@@ -116,8 +106,6 @@ models:
             eligible_users:
             inputs:
               - packages/base_features/models/rudder_user_base_features
-
-          
           preprocessing: &model_prep_configs_90_days
             ignore_features:
               - user_email
@@ -136,6 +124,5 @@ models:
             feature_meta_data: &feature_meta_data_90_days
               features:
                 - name: *percentile_name_90_days
-                  description: 'Percentile of churn score. Higher the percentile, higher the probability of churn'
-
+                  description: "Percentile of churn score. Higher the percentile, higher the probability of churn"
       <<: *feature_meta_data_90_days

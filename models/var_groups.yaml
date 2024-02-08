@@ -67,7 +67,7 @@ var_groups:
               - timestamp desc
           where: currency is not null and currency!=''
           tags:
-            - Demographics  
+            - Demographics
       - entity_var:
           name: campaign_sources
           select: array_agg( context_campaign_source )
