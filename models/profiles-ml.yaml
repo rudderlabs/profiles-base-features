@@ -7,6 +7,7 @@ models:
       entity_key: user
       validity_time: 24h # 1 day
       py_repo_url: https://github.com/rudderlabs/rudderstack-profiles-classifier.git
+
       train:
         file_extension: .json
         file_validity: 168h # If the last trained model is older than this, then the model will be trained again,
@@ -48,6 +49,7 @@ models:
       entity_key: user
       validity_time: 24h # 1 day
       py_repo_url: https://github.com/rudderlabs/rudderstack-profiles-classifier.git
+
       train:
         file_extension: .json
         file_validity: 168h # If the last trained model is older than this, then the model will be trained again,
@@ -89,6 +91,7 @@ models:
       entity_key: user
       validity_time: 24h # 1 day
       py_repo_url: https://github.com/rudderlabs/rudderstack-profiles-classifier.git
+
       train:
         file_extension: .json
         file_validity: 168h # If the last trained model is older than this, then the model will be trained again,
