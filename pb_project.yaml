@@ -1,9 +1,9 @@
 # Project name
-name: base_features
+name: attribution_input
 # Project's yaml schema version
 schema_version: 44
 # WH Connection Profile to use.
-connection: test
+connection: ml_demo_test1
 # Whether to allow inputs having no timestamps,
 # if true, data without timestamps are included when running models
 include_untimed: true
@@ -36,3 +36,5 @@ id_types:
         regex: ".+@.+"
       - type: exclude
         value: "test@company.com"
+python_requirements:
+  - profiles-pycorelib
