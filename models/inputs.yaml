@@ -14,7 +14,7 @@ inputs:
         - name: anonymous_id
         - name: email
     app_defaults:
-      table: rudderstacktestbq.DATA_APPS_SIMULATED_SHOPIFY.IDENTIFIES
+      table: RUDDERSTACK_TEST_DB.DATA_APPS_SIMULATED_SHOPIFY.IDENTIFIES
       occurred_at_col: timestamp
       ids:
         - select: "user_id"
@@ -40,7 +40,7 @@ inputs:
         - name: user_id
         - name: anonymous_id
     app_defaults:
-      table: rudderstacktestbq.DATA_APPS_SIMULATED_SHOPIFY.TRACKS
+      table: RUDDERSTACK_TEST_DB.DATA_APPS_SIMULATED_SHOPIFY.TRACKS
       occurred_at_col: timestamp
       ids:
         - select: "user_id"
@@ -63,7 +63,7 @@ inputs:
         - name: user_id
         - name: anonymous_id
     app_defaults:
-      table: rudderstacktestbq.DATA_APPS_SIMULATED_SHOPIFY.PAGES
+      table: RUDDERSTACK_TEST_DB.DATA_APPS_SIMULATED_SHOPIFY.PAGES
       occurred_at_col: timestamp
       ids:
         - select: "user_id"
