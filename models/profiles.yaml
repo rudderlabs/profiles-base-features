@@ -108,7 +108,6 @@ models:
       days_since_first_seen_var: days_since_first_seen
       first_seen_since: 90
       conversion_entity_var: is_payer
-      output_field: campaigns
       entity: user
 
   - name: attribution_scores_revenue
@@ -118,5 +117,4 @@ models:
       days_since_first_seen_var: days_since_first_seen
       first_seen_since: 90
       conversion_entity_var: gross_amt_spent_overall
-      output_field: campaigns
       entity: user      
