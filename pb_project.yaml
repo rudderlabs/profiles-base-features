@@ -1,7 +1,7 @@
 # Project name
 name: base_features
 # Project's yaml schema version
-schema_version: 54
+schema_version: 60
 # WH Connection Profile to use.
 connection: dev_wh
 # Whether to allow inputs having no timestamps,
@@ -36,4 +36,4 @@ id_types:
       - type: exclude
         value: "test@company.com"
 python_requirements:
-  - profiles-pycorelib==0.11.*
+  - profiles-pycorelib==0.12.*

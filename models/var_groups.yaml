@@ -47,7 +47,7 @@ var_groups:
           window:
             frame_clause: ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
             order_by:
-              - timestamp desc  
+              - timestamp desc
           where: first_name is not null and first_name!=''
           tags:
             - Demographics
