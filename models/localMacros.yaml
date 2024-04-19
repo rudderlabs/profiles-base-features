@@ -8,3 +8,8 @@ macros:
       - column
       - number_of_days
     value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
+  - name: macro_listagg
+    inputs:
+      - column
+      - timestamp
+    value: " {% if warehouse.DatabaseType() == \"bigquery\" %} STRING_AGG({{column}}, ',' ORDER BY {{timestamp}} ASC) {% else %} LISTAGG({{column}}, ',') WITHIN group (order by {{timestamp}} ASC) {% endif %}"

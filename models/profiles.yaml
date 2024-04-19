@@ -73,23 +73,32 @@ models:
             from: inputs/rsOrderCompleted
             description: Whether a customer has ever made a payment
         - entity_var:
+            name: first_payment_date
+            select: min(timestamp)
+            from: inputs/rsOrderCompleted
+            where: REVENUE>0
+        - entity_var:
             name: campaign_sources
-            select: array_agg( context_campaign_source )
+            select: "{{macro_listagg('context_campaign_source', 'original_timestamp')}}"
             from: inputs/rsIdentifies
+            where: context_campaign_source IS NOT NULL and timestamp <= {{user.Var("first_payment_date")}}
         - entity_var:
             name: campaigns_list
             from: models/pages_orderby_table
-            select: array_agg( context_campaign_name)
+            select: "{{macro_listagg('context_campaign_name', 'original_timestamp')}}"
+            where: context_campaign_name IS NOT NULL and timestamp <= {{user.Var("first_payment_date")}}
             description: list of all campaigns from which a user has visited the app, sorted in chronological order, from oldest to newest
         - entity_var:
             name: mediums_list
             from: models/pages_orderby_table
-            select: array_agg( context_campaign_medium)
+            select: "{{macro_listagg('context_campaign_medium', 'original_timestamp')}}"
+            where: context_campaign_medium IS NOT NULL and timestamp <= {{user.Var("first_payment_date")}}
             description: list of all mediums from which a user has visited the app, sorted in chronological order, from oldest to newest
         - entity_var:
             name: sources_list
             from: models/pages_orderby_table
-            select: array_agg( context_campaign_source)
+            select: "{{macro_listagg('context_campaign_source', 'original_timestamp')}}"
+            where: context_campaign_source IS NOT NULL and timestamp <= {{user.Var("first_payment_date")}}
             description: list of all sources from which a user has visited the app, sorted in chronological order, from oldest to newest
             dependencies:
               - session_start_time
@@ -97,6 +106,7 @@ models:
         - days_since_first_seen
         - gross_amt_spent_overall
         - is_payer
+        - first_payment_date
         - campaign_sources
         - campaigns_list
         - mediums_list
