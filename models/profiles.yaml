@@ -82,18 +82,24 @@ models:
             select: "{{macro_listagg('context_campaign_source', 'original_timestamp')}}"
             from: inputs/rsIdentifies
             where: context_campaign_source IS NOT NULL and timestamp <= {{user.Var("first_payment_date")}}
+            dependencies:
+              - first_payment_date
         - entity_var:
             name: campaigns_list
             from: models/pages_orderby_table
             select: "{{macro_listagg('context_campaign_name', 'original_timestamp')}}"
             where: context_campaign_name IS NOT NULL and timestamp <= {{user.Var("first_payment_date")}}
             description: list of all campaigns from which a user has visited the app, sorted in chronological order, from oldest to newest
+            dependencies:
+              - first_payment_date
         - entity_var:
             name: mediums_list
             from: models/pages_orderby_table
             select: "{{macro_listagg('context_campaign_medium', 'original_timestamp')}}"
             where: context_campaign_medium IS NOT NULL and timestamp <= {{user.Var("first_payment_date")}}
             description: list of all mediums from which a user has visited the app, sorted in chronological order, from oldest to newest
+            dependencies:
+              - first_payment_date
         - entity_var:
             name: sources_list
             from: models/pages_orderby_table
@@ -101,7 +107,7 @@ models:
             where: context_campaign_source IS NOT NULL and timestamp <= {{user.Var("first_payment_date")}}
             description: list of all sources from which a user has visited the app, sorted in chronological order, from oldest to newest
             dependencies:
-              - session_start_time
+              - first_payment_date
       features:
         - days_since_first_seen
         - gross_amt_spent_overall
