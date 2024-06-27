@@ -12,4 +12,4 @@ macros:
     inputs:
       - column
       - delimeter
-    value: " {% if warehouse.DatabaseType() == \"bigquery\" %} string_agg({{column}}, {{delimeter}}) {% else %} listagg({{column}}, {{delimeter}}) {% endif %}"
+    value: " {% if warehouse.DatabaseType() == \"bigquery\" %} string_agg({{column}}, '{{delimeter}}') {% else %} listagg({{column}}, '{{delimeter}}') {% endif %}"
