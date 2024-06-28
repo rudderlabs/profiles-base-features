@@ -75,7 +75,7 @@ var_groups:
             - Demographics
       - entity_var:
           name: campaign_sources
-          select: listagg( context_campaign_source,  ', ')
+          select: "{{ macro_listagg( 'context_campaign_source',  ', ') }}"
           from: models/rsIdentifiesFinal
           tags:
             - Attribution
@@ -245,21 +245,21 @@ var_groups:
       - entity_var:
           name: campaigns_list
           from: models/pages_orderby_table
-          select: listagg( context_campaign_name,  ', ')
+          select: "{{ macro_listagg( 'context_campaign_name',  ', ') }}"
           description: list of all campaigns from which a user has visited the app, sorted in chronological order, from oldest to newest
           tags:
             - Attribution
       - entity_var:
           name: mediums_list
           from: models/pages_orderby_table
-          select: listagg( context_campaign_medium,  ', ')
+          select: "{{ macro_listagg( 'context_campaign_medium',  ', ') }}"
           description: list of all mediums from which a user has visited the app, sorted in chronological order, from oldest to newest
           tags:
             - Attribution
       - entity_var:
           name: sources_list
           from: models/pages_orderby_table
-          select: listagg( context_campaign_source,  ', ')
+          select: "{{ macro_listagg( 'context_campaign_source',  ', ') }}"
           description: list of all sources from which a user has visited the app, sorted in chronological order, from oldest to newest
           tags:
             - Attribution
