@@ -159,7 +159,7 @@ var_groups:
       - entity_var:
           name: avg_session_length_in_sec_overall
           from: models/rsTracksUnionPages
-          select: avg(datediff(second, {{rsTracksUnionPages.Var("session_start_time")}}, {{rsTracksUnionPages.Var("session_end_time")}}))
+          select: avg({{ macro_datediff('second, {{rsTracksUnionPages.Var("session_start_time")}}, {{rsTracksUnionPages.Var("session_end_time")}}') }})
           where: '{{rsTracksUnionPages.Var("session_row_number")}} = 1 and context_session_id is not null'
           description: Average session length (in seconds) of all the user sessions till date.
           tags:
@@ -167,7 +167,7 @@ var_groups:
       - entity_var:
           name: avg_session_length_in_sec_last_week
           from: models/rsTracksUnionPages
-          select: avg(datediff(second, {{rsTracksUnionPages.Var("session_start_time")}}, {{rsTracksUnionPages.Var("session_end_time")}}))
+          select: avg({{ macro_datediff('second, {{rsTracksUnionPages.Var("session_start_time")}}, {{rsTracksUnionPages.Var("session_end_time")}}') }})
           where: context_session_id is not null and {{rsTracksUnionPages.Var("session_row_number")}} = 1 and {{macro_datediff('{{rsTracksUnionPages.Var("session_start_time")}}')}}  between 0 and 7
           description: Average session length (in seconds) of all the user sessions that started in last 7 days
           tags:
@@ -175,7 +175,7 @@ var_groups:
       - entity_var:
           name: avg_session_length_in_sec_365_days
           from: models/rsTracksUnionPages
-          select: avg(datediff(second, {{rsTracksUnionPages.Var("session_start_time")}}, {{rsTracksUnionPages.Var("session_end_time")}}))
+          select: avg({{ macro_datediff('second, {{rsTracksUnionPages.Var("session_start_time")}}, {{rsTracksUnionPages.Var("session_end_time")}}') }})
           where: "context_session_id is not null and {{rsTracksUnionPages.Var(\"session_row_number\")}} = 1 and {{macro_datediff_n('{{rsTracksUnionPages.Var(\"session_start_time\")}}','365')}}"
           description: Average session length (in seconds) of all the user sessions that started in last 365 days
           tags:
