@@ -13,3 +13,19 @@ macros:
       - column
       - delimeter
     value: " {% if warehouse.DatabaseType() == \"bigquery\" %} string_agg({{column}}, '{{delimeter}}') {% else %} listagg({{column}}, '{{delimeter}}') {% endif %}"
+  - name: macro_datediff_with_start_end_and_granularity
+    inputs:
+      - granularity
+      - start_date_column
+      - end_date_column
+    value: "
+    {% if warehouse.DatabaseType() == \"bigquery\" %}
+      {% if granularity == 'second' %}
+        timestamp_diff(timestamp({{end_date_column}}), timestamp({{start_date_column}}), {{granularity}}) 
+      {% else %}
+        date_diff(date({{end_date_column}}), date({{start_date_column}}), {{granularity}}) 
+      {% endif %}
+    {% else %} 
+      datediff({{granularity}}, {{start_date_column}}, {{end_date_column}})
+    {% endif %}
+    "
