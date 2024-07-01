@@ -87,3 +87,4 @@ models:
         - campaigns_list
         - mediums_list
         - sources_list
+        - max_timestamp_bw_tracks_pages
