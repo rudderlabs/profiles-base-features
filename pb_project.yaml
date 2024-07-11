@@ -1,7 +1,7 @@
 # Project name
 name: base_features
 # Project's yaml schema version
-schema_version: 67
+schema_version: 69
 # WH Connection Profile to use.
 connection: test
 # Model folders to use.
