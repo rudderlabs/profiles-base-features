@@ -18,4 +18,14 @@ macros:
       - granularity
       - start_date_column
       - end_date_column
-    value: " {% if warehouse.DatabaseType() == \"bigquery\" %} {% if granularity == 'second' %} timestamp_diff(timestamp({{end_date_column}}), timestamp({{start_date_column}}), {{granularity}}) {% else %} date_diff(date({{end_date_column}}), date({{start_date_column}}), {{granularity}}) {% endif %} {% else %} datediff({{granularity}}, {{start_date_column}}, {{end_date_column}}) {% endif %} "
+    value: "
+    {% if warehouse.DatabaseType() == \"bigquery\" %}
+      {% if granularity == 'second' %}
+        timestamp_diff(timestamp({{end_date_column}}), timestamp({{start_date_column}}), {{granularity}}) 
+      {% else %}
+        date_diff(date({{end_date_column}}), date({{start_date_column}}), {{granularity}}) 
+      {% endif %}
+    {% else %} 
+      datediff({{granularity}}, {{start_date_column}}, {{end_date_column}})
+    {% endif %}
+
