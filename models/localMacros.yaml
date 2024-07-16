@@ -28,4 +28,4 @@ macros:
     {% else %} 
       datediff({{granularity}}, {{start_date_column}}, {{end_date_column}})
     {% endif %}
-    "
+
