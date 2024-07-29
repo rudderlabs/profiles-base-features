@@ -47,7 +47,6 @@ models:
         with_entity_ids: []
         with_columns:
           - name: percentile_churn_score_7_days
-        mode: append_computed
   - name: &model_name_30_days churn_30_days_model
     model_type: python_model
     model_spec:
@@ -95,7 +94,6 @@ models:
         with_entity_ids: []
         with_columns:
           - name: percentile_churn_score_30_days
-        mode: append_computed
   - name: &model_name_90_days churn_90_days_model
     model_type: python_model
     model_spec:
@@ -143,4 +141,3 @@ models:
         with_entity_ids: []
         with_columns:
           - name: percentile_churn_score_90_days
-        mode: append_computed
