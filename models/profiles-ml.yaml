@@ -38,7 +38,7 @@ models:
             feature_meta_data: &feature_meta_data_7_days
               features:
                 - name: *percentile_name_7_days
-                  description: Percentile score of users likelihood to pay in the next 30 days
+                  description: Percentile score of non paying users likelihood to convert to paid tier in the next 30 days
       <<: *feature_meta_data_7_days
       contract:
         is_optional: false
