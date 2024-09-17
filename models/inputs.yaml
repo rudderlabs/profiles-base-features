@@ -1,5 +1,5 @@
 inputs:
-  - name: rsIdentifies_1
+  - name: rsIdentifies
     source_metadata:
       role: "*"
       category: "webhook|null"
@@ -14,7 +14,7 @@ inputs:
         - name: anonymous_id
         - name: email
     app_defaults:
-      table: RUDDERSTACK_TEST_DB.DATA_APPS_SIMULATED_SHOPIFY.IDENTIFIES
+      table: snowflake_quickstart.public.identifies
       occurred_at_col: timestamp
       ids:
         - select: "user_id"
@@ -26,7 +26,7 @@ inputs:
         - select: "lower(email)"
           type: email
           entity: user
-  - name: rsIdentifies_2
+  - name: rsTracks
     source_metadata:
       role: "*"
       category: "webhook|null"
@@ -39,9 +39,8 @@ inputs:
         - name: timestamp
         - name: user_id
         - name: anonymous_id
-        - name: email
     app_defaults:
-      table: RUDDERSTACK_TEST_DB.DATA_APPS_SIMULATED_SHOPIFY.IDENTIFIES
+      table: snowflake_quickstart.public.TRACKS
       occurred_at_col: timestamp
       ids:
         - select: "user_id"
@@ -50,37 +49,7 @@ inputs:
         - select: "anonymous_id"
           type: anonymous_id
           entity: user
-        - select: "lower(email)"
-          type: email
-          entity: user
-  - name: rsIdentifies_3
-    source_metadata:
-      role: "*"
-      category: "webhook|null"
-    contract:
-      is_optional: false
-      is_event_stream: true
-      with_entity_ids:
-        - user
-      with_columns:
-        - name: timestamp
-        - name: user_id
-        - name: anonymous_id
-        - name: email
-    app_defaults:
-      table: RUDDERSTACK_TEST_DB.DATA_APPS_SIMULATED_SHOPIFY.IDENTIFIES
-      occurred_at_col: timestamp
-      ids:
-        - select: "user_id"
-          type: user_id
-          entity: user
-        - select: "anonymous_id"
-          type: anonymous_id
-          entity: user
-        - select: "lower(email)"
-          type: email
-          entity: user
-  - name: rsTracks_1
+  - name: rsPages
     source_metadata:
       role: "*"
       category: "webhook|null"
@@ -94,122 +63,7 @@ inputs:
         - name: user_id
         - name: anonymous_id
     app_defaults:
-      table: RUDDERSTACK_TEST_DB.DATA_APPS_SIMULATED_SHOPIFY.TRACKS
-      occurred_at_col: timestamp
-      ids:
-        - select: "user_id"
-          type: user_id
-          entity: user
-        - select: "anonymous_id"
-          type: anonymous_id
-          entity: user
-  - name: rsTracks_2
-    source_metadata:
-      role: "*"
-      category: "webhook|null"
-    contract:
-      is_optional: false
-      is_event_stream: true
-      with_entity_ids:
-        - user
-      with_columns:
-        - name: timestamp
-        - name: user_id
-        - name: anonymous_id
-    app_defaults:
-      table: RUDDERSTACK_TEST_DB.DATA_APPS_SIMULATED_SHOPIFY.TRACKS
-      occurred_at_col: timestamp
-      ids:
-        - select: "user_id"
-          type: user_id
-          entity: user
-        - select: "anonymous_id"
-          type: anonymous_id
-          entity: user
-  - name: rsTracks_3
-    source_metadata:
-      role: "*"
-      category: "webhook|null"
-    contract:
-      is_optional: false
-      is_event_stream: true
-      with_entity_ids:
-        - user
-      with_columns:
-        - name: timestamp
-        - name: user_id
-        - name: anonymous_id
-    app_defaults:
-      table: RUDDERSTACK_TEST_DB.DATA_APPS_SIMULATED_SHOPIFY.TRACKS
-      occurred_at_col: timestamp
-      ids:
-        - select: "user_id"
-          type: user_id
-          entity: user
-        - select: "anonymous_id"
-          type: anonymous_id
-          entity: user
-  - name: rsPages_1
-    source_metadata:
-      role: "*"
-      category: "webhook|null"
-    contract:
-      is_optional: false
-      is_event_stream: true
-      with_entity_ids:
-        - user
-      with_columns:
-        - name: timestamp
-        - name: user_id
-        - name: anonymous_id
-    app_defaults:
-      table: RUDDERSTACK_TEST_DB.DATA_APPS_SIMULATED_SHOPIFY.PAGES
-      occurred_at_col: timestamp
-      ids:
-        - select: "user_id"
-          type: user_id
-          entity: user
-        - select: "anonymous_id"
-          type: anonymous_id
-          entity: user
-  - name: rsPages_2
-    source_metadata:
-      role: "*"
-      category: "webhook|null"
-    contract:
-      is_optional: false
-      is_event_stream: true
-      with_entity_ids:
-        - user
-      with_columns:
-        - name: timestamp
-        - name: user_id
-        - name: anonymous_id
-    app_defaults:
-      table: RUDDERSTACK_TEST_DB.DATA_APPS_SIMULATED_SHOPIFY.PAGES
-      occurred_at_col: timestamp
-      ids:
-        - select: "user_id"
-          type: user_id
-          entity: user
-        - select: "anonymous_id"
-          type: anonymous_id
-          entity: user
-  - name: rsPages_3
-    source_metadata:
-      role: "*"
-      category: "webhook|null"
-    contract:
-      is_optional: false
-      is_event_stream: true
-      with_entity_ids:
-        - user
-      with_columns:
-        - name: timestamp
-        - name: user_id
-        - name: anonymous_id
-    app_defaults:
-      table: RUDDERSTACK_TEST_DB.DATA_APPS_SIMULATED_SHOPIFY.PAGES
+      table: snowflake_quickstart.public.PAGES
       occurred_at_col: timestamp
       ids:
         - select: "user_id"

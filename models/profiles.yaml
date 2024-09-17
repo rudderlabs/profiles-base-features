@@ -1,25 +1,4 @@
 models:
-  - name: rsIdentifies
-    model_type: common_column_union
-    model_spec:
-      inputs:
-        - inputs/rsIdentifies_1
-        - inputs/rsIdentifies_2
-        - inputs/rsIdentifies_3
-  - name: rsTracks
-    model_type: common_column_union
-    model_spec:
-      inputs:
-        - inputs/rsTracks_1
-        - inputs/rsTracks_2
-        - inputs/rsTracks_3
-  - name: rsPages
-    model_type: common_column_union
-    model_spec:
-      inputs:
-        - inputs/rsPages_1
-        - inputs/rsPages_2
-        - inputs/rsPages_3
   - name: pages_orderby_table
     model_type: sql_template
     model_spec:
@@ -27,7 +6,7 @@ models:
         output_type: ephemeral
         run_type: discrete
       single_sql: |
-        {% with Pages = this.DeRef("models/rsPages") %}
+        {% with Pages = this.DeRef("inputs/rsPages") %}
             select * from {{Pages}} order by timestamp asc
         {% endwith %}
       ids:
