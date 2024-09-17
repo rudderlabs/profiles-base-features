@@ -15,6 +15,11 @@ entities:
       - anonymous_id
       - email
       - cart_token
+    feature_views:
+      name: user_feature_view
+      using_ids:
+        - id: user_id
+          name: c360_userid      
 id_types:
   - name: user_id
   - name: cart_token
