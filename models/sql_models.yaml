@@ -2,7 +2,6 @@ models:
   - name: rsTracksUnionPages
     model_type: sql_template
     model_spec:
-      validity_time: 24h # 1 day
       materialization:
         output_type: ephemeral
         run_type: discrete

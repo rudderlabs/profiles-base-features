@@ -2,7 +2,6 @@ models:
   - name: rudder_user_id_stitcher
     model_type: id_stitcher
     model_spec:
-      validity_time: 24h # 1 day
       entity_key: user
       edge_sources:
         - from: inputs/rsIdentifies
@@ -12,7 +11,6 @@ models:
   - name: pages_orderby_table
     model_type: sql_template
     model_spec:
-      validity_time: 24h # 1 day
       materialization:
         output_type: ephemeral
         run_type: discrete
@@ -45,7 +43,6 @@ models:
   - name: rudder_user_base_features
     model_type: feature_table_model
     model_spec:
-      validity_time: 24h # 1 day
       entity_key: user
       features:
         - days_since_last_seen
