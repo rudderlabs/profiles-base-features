@@ -36,3 +36,5 @@ id_types:
         regex: ".+@.+"
       - type: exclude
         value: "test@company.com"
+python_requirements:
+  - profiles_mlcorelib
