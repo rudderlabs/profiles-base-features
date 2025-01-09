@@ -34,3 +34,5 @@ id_types:
       - type: exclude
         value: "test@company.com"
 retention_period: 720h0m0s
+python_requirements:
+  - profiles_mlcorelib
