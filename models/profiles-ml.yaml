@@ -1,140 +1,151 @@
 # This is a sample file, for detailed reference see: https://rudderlabs.github.io/pywht/
 models:
-  - name: &model_name_7_days churn_7_days_model
-    model_type: python_model
+  - name: churn_7_days_model
+    model_type: propensity
     model_spec:
-      occurred_at_col: insert_ts
       entity_key: user
-      py_repo_url: https://github.com/rudderlabs/rudderstack-profiles-classifier.git
-      train:
-        file_extension: .json
-        file_validity: 168h # If the last trained model is older than this, then the model will be trained again,
-        inputs: &inputs_7_days
-          - models/rudder_user_base_features
-        config:
-          data: &model_data_configs_7_days
-            label_column: is_churned_7_days # Name of column for which we want to find predictions
-            label_value: 1 # Value of label column for which prediction is generated
-            prediction_horizon_days: 7 # Number of days in future for which we want to predict
-            output_profiles_ml_model: *model_name_7_days # Name of output model based on current model to dinstinguish between multiple models
-            eligible_users: days_since_last_seen<=90
-            inputs:
-              - packages/base_features/models/rudder_user_base_features
-          preprocessing: &model_prep_configs_7_days
-            ignore_features:
-              - user_email
-              - first_name
-              - last_name
-      predict:
-        inputs:
-          - models/rudder_user_base_features
-        config:
-          data: *model_data_configs_7_days # Use the same config as training
-          preprocessing: *model_prep_configs_7_days # Use the same config as training
-          outputs:
-            column_names:
-              percentile: &percentile_name_7_days percentile_churn_score_7_days # Name of column in output table having percentile score
-              score: churn_score_7_days # Name of column in output table having probabilistic score
-            feature_meta_data: &feature_meta_data_7_days
-              features:
-                - name: *percentile_name_7_days
-                  description: 'Percentile of churn score. Higher the percentile, higher the probability of churn'
-      <<: *feature_meta_data_7_days
-      contract:
-        is_optional: false
-        is_event_stream: true
-        with_entity_ids: []
-        with_columns:
-          - name: percentile_churn_score_7_days
-  - name: &model_name_30_days churn_30_days_model
-    model_type: python_model
+      training:
+        predict_var: entity/user/is_churned_7_days
+        predict_window_days: 7
+        eligible_users: days_since_last_seen<=90
+        max_row_count: 500000
+        label_value: 1
+        type: classification
+        validity: day
+        new_materialisations_config:
+          strategy: "auto"
+          feature_data_min_date_diff: 14
+          max_no_of_dates: 3
+      prediction:
+        output_columns:
+          percentile:
+            name: percentile_churn_score_7_days
+            description: Percentile of churn score. Higher the percentile, higher the probability of churn
+          score:
+            name: churn_score_7_days
+            description: description2
+            is_feature: False
+      inputs:
+        - entity/user/days_since_last_seen
+        - entity/user/days_since_account_creation
+        - entity/user/state
+        - entity/user/country
+        - entity/user/currency
+        - entity/user/active_days_in_past_7_days
+        - entity/user/active_days_in_past_365_days
+        - entity/user/total_sessions_till_date
+        - entity/user/total_sessions_last_week
+        - entity/user/total_sessions_90_days
+        - entity/user/total_sessions_365_days
+        - entity/user/avg_session_length_in_sec_overall
+        - entity/user/avg_session_length_in_sec_last_week
+        - entity/user/avg_session_length_in_sec_365_days
+        - entity/user/first_seen_date
+        - entity/user/last_seen_date
+        - entity/user/is_churned_7_days
+        - entity/user/is_churned_30_days
+        - entity/user/is_churned_90_days
+        - entity/user/first_campaign_name
+        - entity/user/last_campaign_name
+        - entity/user/first_source_name
+        - entity/user/last_source_name
+
+  - name: churn_30_days_model
+    model_type: propensity
     model_spec:
-      occurred_at_col: insert_ts
       entity_key: user
-      py_repo_url: https://github.com/rudderlabs/rudderstack-profiles-classifier.git
-      train:
-        file_extension: .json
-        file_validity: 168h # If the last trained model is older than this, then the model will be trained again,
-        inputs: &inputs_30_days
-          - models/rudder_user_base_features # inputs to materialise the required data for model
-        config:
-          data: &model_data_configs_30_days
-            label_column: is_churned_30_days # Name of column for which we want to find predictions
-            label_value: 1 # Value of label column for which prediction is generated
-            prediction_horizon_days: 30 # Number of days in future for which we want to predict
-            output_profiles_ml_model: *model_name_30_days # Name of output model based on current model to dinstinguish between multiple models
-            eligible_users: days_since_last_seen<=90
-            inputs:
-              - packages/base_features/models/rudder_user_base_features
-          preprocessing: &model_prep_configs_30_days
-            ignore_features:
-              - user_email
-              - first_name
-              - last_name
-      predict:
-        inputs:
-          - models/rudder_user_base_features
-        config:
-          data: *model_data_configs_30_days # Use the same config as training
-          preprocessing: *model_prep_configs_30_days # Use the same config as training
-          outputs:
-            column_names:
-              percentile: &percentile_name_30_days percentile_churn_score_30_days # Name of column in output table having percentile score
-              score: churn_score_30_days # Name of column in output table having probabilistic score
-            feature_meta_data: &feature_meta_data_30_days
-              features:
-                - name: *percentile_name_30_days
-                  description: 'Percentile of churn score. Higher the percentile, higher the probability of churn'
-      <<: *feature_meta_data_30_days
-      contract:
-        is_optional: false
-        is_event_stream: true
-        with_entity_ids: []
-        with_columns:
-          - name: percentile_churn_score_30_days
-  - name: &model_name_90_days churn_90_days_model
-    model_type: python_model
+      training:
+        predict_var: entity/user/is_churned_30_days
+        predict_window_days: 30
+        eligible_users: days_since_last_seen<=90
+        max_row_count: 500000
+        label_value: 1
+        type: classification
+        validity: day
+        new_materialisations_config:
+          strategy: "auto"
+          feature_data_min_date_diff: 14
+          max_no_of_dates: 3
+      prediction:
+        output_columns:
+          percentile:
+            name: percentile_churn_score_30_days
+            description: Percentile of churn score. Higher the percentile, higher the probability of churn
+          score:
+            name: churn_score_30_days
+            description: description2
+            is_feature: False
+      inputs:
+        - entity/user/days_since_last_seen
+        - entity/user/days_since_account_creation
+        - entity/user/state
+        - entity/user/country
+        - entity/user/currency
+        - entity/user/active_days_in_past_7_days
+        - entity/user/active_days_in_past_365_days
+        - entity/user/total_sessions_till_date
+        - entity/user/total_sessions_last_week
+        - entity/user/total_sessions_90_days
+        - entity/user/total_sessions_365_days
+        - entity/user/avg_session_length_in_sec_overall
+        - entity/user/avg_session_length_in_sec_last_week
+        - entity/user/avg_session_length_in_sec_365_days
+        - entity/user/first_seen_date
+        - entity/user/last_seen_date
+        - entity/user/is_churned_7_days
+        - entity/user/is_churned_30_days
+        - entity/user/is_churned_90_days
+        - entity/user/first_campaign_name
+        - entity/user/last_campaign_name
+        - entity/user/first_source_name
+        - entity/user/last_source_name
+
+  - name: churn_90_days_model
+    model_type: propensity
     model_spec:
-      occurred_at_col: insert_ts
       entity_key: user
-      py_repo_url: https://github.com/rudderlabs/rudderstack-profiles-classifier.git
-      train:
-        file_extension: .json
-        file_validity: 168h # If the last trained model is older than this, then the model will be trained again,
-        inputs: &inputs_90_days
-          - models/rudder_user_base_features # inputs to materialise the required data for model
-        config:
-          data: &model_data_configs_90_days
-            label_column: is_churned_90_days # Name of column for which we want to find predictions
-            label_value: 1 # Value of label column for which prediction is generated
-            prediction_horizon_days: 90 # Number of days in future for which we want to predict
-            output_profiles_ml_model: *model_name_90_days # Name of output model based on current model to dinstinguish between multiple models
-            eligible_users: days_since_last_seen<=90
-            inputs:
-              - packages/base_features/models/rudder_user_base_features
-          preprocessing: &model_prep_configs_90_days
-            ignore_features:
-              - user_email
-              - first_name
-              - last_name
-      predict:
-        inputs:
-          - models/rudder_user_base_features
-        config:
-          data: *model_data_configs_90_days # Use the same config as training
-          preprocessing: *model_prep_configs_90_days # Use the same config as training
-          outputs:
-            column_names:
-              percentile: &percentile_name_90_days percentile_churn_score_90_days # Name of column in output table having percentile score
-              score: churn_score_90_days # Name of column in output table having probabilistic score
-            feature_meta_data: &feature_meta_data_90_days
-              features:
-                - name: *percentile_name_90_days
-                  description: 'Percentile of churn score. Higher the percentile, higher the probability of churn'
-      <<: *feature_meta_data_90_days
-      contract:
-        is_optional: false
-        is_event_stream: true
-        with_entity_ids: []
-        with_columns:
-          - name: percentile_churn_score_90_days
+      training:
+        predict_var: entity/user/is_churned_90_days
+        predict_window_days: 90
+        eligible_users: days_since_last_seen<=90
+        max_row_count: 500000
+        label_value: 1
+        type: classification
+        validity: day
+        new_materialisations_config:
+          strategy: "auto"
+          feature_data_min_date_diff: 14
+          max_no_of_dates: 3
+      prediction:
+        output_columns:
+          percentile:
+            name: percentile_churn_score_90_days
+            description: Percentile of churn score. Higher the percentile, higher the probability of churn
+          score:
+            name: churn_score_90_days
+            description: description2
+            is_feature: False
+      inputs:
+        - entity/user/days_since_last_seen
+        - entity/user/days_since_account_creation
+        - entity/user/state
+        - entity/user/country
+        - entity/user/currency
+        - entity/user/active_days_in_past_7_days
+        - entity/user/active_days_in_past_365_days
+        - entity/user/total_sessions_till_date
+        - entity/user/total_sessions_last_week
+        - entity/user/total_sessions_90_days
+        - entity/user/total_sessions_365_days
+        - entity/user/avg_session_length_in_sec_overall
+        - entity/user/avg_session_length_in_sec_last_week
+        - entity/user/avg_session_length_in_sec_365_days
+        - entity/user/first_seen_date
+        - entity/user/last_seen_date
+        - entity/user/is_churned_7_days
+        - entity/user/is_churned_30_days
+        - entity/user/is_churned_90_days
+        - entity/user/first_campaign_name
+        - entity/user/last_campaign_name
+        - entity/user/first_source_name
+        - entity/user/last_source_name
