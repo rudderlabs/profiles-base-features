@@ -1,12 +1,9 @@
 # Project name
 name: base_features
 # Project's yaml schema version
-schema_version: 42
+schema_version: 84
 # WH Connection Profile to use.
-connection: dev_wh
-# Whether to allow inputs having no timestamps,
-# if true, data without timestamps are included when running models
-include_untimed: true
+connection: test
 # Model folders to use.
 model_folders:
   - models
@@ -36,3 +33,6 @@ id_types:
         regex: ".+@.+"
       - type: exclude
         value: "test@company.com"
+retention_period: 720h0m0s
+python_requirements:
+  - profiles_mlcorelib
